@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>QWE Archive</title>
 
 <style>
@@ -13,142 +14,166 @@ padding:0;
 box-sizing:border-box;
 }
 
-html{
-scroll-behavior:smooth;
-}
-
 body{
-background:#000;
+font-family:"Microsoft YaHei",sans-serif;
+overflow:hidden;
+background:black;
 color:white;
-font-family:Arial, sans-serif;
-overflow-x:hidden;
 }
 
-/* 首页背景 */
+/* 背景 */
 
 .hero{
 height:100vh;
+width:100%;
+position:relative;
+
 background:
 linear-gradient(
-rgba(0,0,0,.55),
-rgba(0,0,0,.75)
+rgba(0,0,0,0.55),
+rgba(0,0,0,0.75)
 ),
 url("image.png");
 
 background-size:cover;
 background-position:center;
-display:flex;
-justify-content:center;
-align-items:center;
-text-align:center;
-position:relative;
+background-repeat:no-repeat;
+}
+
+/* 黑色渐变 */
+
+.overlay{
+position:absolute;
+inset:0;
+
+background:
+radial-gradient(
+circle at center,
+transparent 0%,
+rgba(0,0,0,0.35) 60%,
+rgba(0,0,0,0.85) 100%
+);
 }
 
 /* 内容 */
 
-.hero-content{
-animation:fadeIn 2s ease;
+.content{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+z-index:10;
 }
 
-.hero h1{
-font-size:80px;
-letter-spacing:10px;
-text-shadow:0 0 20px rgba(255,0,0,.5);
-}
-
-.hero p{
-margin-top:15px;
-color:#ccc;
-letter-spacing:4px;
-}
-
-.enter-btn{
-display:inline-block;
-margin-top:40px;
-padding:15px 45px;
-border:1px solid white;
-text-decoration:none;
-color:white;
-transition:.3s;
-}
-
-.enter-btn:hover{
-background:white;
-color:black;
-}
-
-/* 分区 */
-
-.section{
-min-height:100vh;
-padding:100px 10%;
-background:#050505;
-border-top:1px solid #222;
-}
-
-.archive{
-color:#888;
-letter-spacing:3px;
-font-size:14px;
-}
+/* 标题 */
 
 .title{
-font-size:50px;
-margin-top:10px;
-margin-bottom:40px;
+font-size:80px;
+font-weight:900;
+
+text-shadow:
+0 0 10px #ff003c,
+0 0 20px #ff003c,
+0 0 40px #ff003c,
+0 0 80px #ff003c;
+
+animation:glow 2s infinite alternate;
 }
 
-.card{
-background:rgba(255,255,255,.05);
-backdrop-filter:blur(10px);
-padding:30px;
-margin-bottom:25px;
-border:1px solid rgba(255,255,255,.1);
-transition:.3s;
+@keyframes glow{
+
+from{
+text-shadow:
+0 0 10px #ff003c,
+0 0 20px #ff003c;
 }
 
-.card:hover{
-transform:translateY(-8px);
-border-color:red;
+to{
+text-shadow:
+0 0 20px #ff003c,
+0 0 40px #ff003c,
+0 0 80px #ff003c;
+}
+
+}
+
+/* 副标题 */
+
+.subtitle{
+margin-top:20px;
+font-size:22px;
+color:#ddd;
+letter-spacing:3px;
 }
 
 /* 时间 */
 
 .clock{
-position:fixed;
-top:20px;
-right:20px;
-background:rgba(0,0,0,.6);
-padding:10px 15px;
-border:1px solid #333;
+margin-top:30px;
+font-size:30px;
+font-weight:bold;
+color:#ff003c;
+}
+
+/* 按钮 */
+
+.btns{
+margin-top:40px;
+display:flex;
+gap:20px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.btn{
+
+padding:15px 35px;
+
+border:2px solid #ff003c;
+
+text-decoration:none;
+
+color:white;
+
+font-size:18px;
+
+border-radius:40px;
+
 backdrop-filter:blur(10px);
-z-index:999;
+
+transition:0.4s;
 }
 
-/* 红色光点 */
+.btn:hover{
 
-.cursor{
-position:fixed;
-width:20px;
-height:20px;
-background:red;
-border-radius:50%;
-pointer-events:none;
-filter:blur(10px);
-opacity:.7;
-z-index:9999;
-transform:translate(-50%,-50%);
+background:#ff003c;
+
+transform:translateY(-5px);
+
+box-shadow:
+0 0 20px #ff003c,
+0 0 40px #ff003c;
+
 }
 
-@keyframes fadeIn{
-from{
-opacity:0;
-transform:translateY(30px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
+/* 底部 */
+
+.footer{
+
+position:absolute;
+
+bottom:20px;
+
+width:100%;
+
+text-align:center;
+
+font-size:14px;
+
+color:#aaa;
+
+z-index:10;
 }
 
 </style>
@@ -156,109 +181,66 @@ transform:translateY(0);
 
 <body>
 
-<div class="clock" id="clock"></div>
+<div class="hero">
 
-<div class="cursor" id="cursor"></div>
+<div class="overlay"></div>
 
-<section class="hero">
+<div class="content">
 
-<div class="hero-content">
+<div class="title">
+QWE ARCHIVE
+</div>
 
-<h1>ARCHIVE</h1>
+<div class="subtitle">
+WELCOME TO MY DIGITAL WORLD
+</div>
 
-<p>ACCESS GRANTED</p>
+<div class="clock" id="clock">
+00:00:00
+</div>
 
-<a href="#about" class="enter-btn">
-ENTER
+<div class="btns">
+
+<a class="btn" href="https://github.com/qqwe27510-tech" target="_blank">
+GitHub
+</a>
+
+<a class="btn" href="#">
+Projects
+</a>
+
+<a class="btn" href="#">
+Contact
 </a>
 
 </div>
 
-</section>
-
-<section class="section" id="about">
-
-<div class="archive">
-ARCHIVE 01
 </div>
 
-<div class="title">
-关于我
+<div class="footer">
+© 2026 QWE Archive
 </div>
 
-<div class="card">
-这里填写你的个人介绍
 </div>
-
-</section>
-
-<section class="section">
-
-<div class="archive">
-ARCHIVE 02
-</div>
-
-<div class="title">
-项目
-</div>
-
-<div class="card">
-项目展示区域
-</div>
-
-<div class="card">
-GitHub 项目
-</div>
-
-</section>
-
-<section class="section">
-
-<div class="archive">
-ARCHIVE 03
-</div>
-
-<div class="title">
-工具箱
-</div>
-
-<div class="card">
-密码生成器
-</div>
-
-<div class="card">
-待办事项
-</div>
-
-<div class="card">
-AI助手入口
-</div>
-
-</section>
 
 <script>
 
-/* 时间 */
-
 function updateClock(){
+
 const now=new Date();
 
+const h=String(now.getHours()).padStart(2,'0');
+const m=String(now.getMinutes()).padStart(2,'0');
+const s=String(now.getSeconds()).padStart(2,'0');
+
 document.getElementById("clock").innerHTML=
-now.toLocaleString();
+`${h}:${m}:${s}`;
+
 }
 
 setInterval(updateClock,1000);
 
 updateClock();
-
-/* 鼠标光点 */
-
-const cursor=document.getElementById("cursor");
-
-document.addEventListener("mousemove",(e)=>{
-cursor.style.left=e.clientX+"px";
-cursor.style.top=e.clientY+"px";
-});
 
 </script>
 
