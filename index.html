@@ -125,6 +125,7 @@ select.input-field option { background: #111; color: white; }
   border-radius: 8px; padding: 15px; backdrop-filter: blur(5px);
   transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
   display: flex; flex-direction: column; position: relative; overflow: hidden;
+  cursor: pointer; /* 新增：让整张卡片显示可点击的手型指针 */
 }
 .card.new-data {
   border-color: var(--neon-cyan); box-shadow: 0 0 20px var(--neon-cyan-glow);
@@ -275,6 +276,28 @@ select.input-field option { background: #111; color: white; }
   </div>
 </div>
 
+<!-- 蓝图详情模态框 -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-box" style="max-width: 600px;">
+    <button class="close-modal" id="closeDetailBtn">×</button>
+    <div class="modal-header" id="detailName" style="margin-bottom: 10px;">武器型号</div>
+    <div style="margin-bottom: 20px;">
+      <span class="gun-type cyan" id="detailType">类型</span>
+    </div>
+    <div class="form-group">
+      <label>战术描述 / 核心优势</label>
+      <div id="detailDesc" style="color: #ddd; line-height: 1.6; font-size: 15px; background: rgba(0, 243, 255, 0.05); padding: 15px; border-radius: 4px; border-left: 3px solid var(--neon-cyan); word-wrap: break-word; word-break: break-all;"></div>
+    </div>
+    <div class="form-group">
+      <label>Delta 协议改枪码</label>
+      <div class="code-box" style="margin-top: 5px;">
+        <div class="code-text" id="detailCode" style="font-size: 16px; padding: 15px;"></div>
+        <button class="copy-btn" id="detailCopyBtn" style="padding: 0 25px; font-size: 14px;">COPY</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // --- 消息系统 (Toast) ---
 function showToast(message, type = 'default', duration = 3000) {
@@ -411,8 +434,13 @@ function renderCards(data) {
   
   reversedData.forEach((gun) => {
     const card = document.createElement('div');
-    // 如果是刚刚爬取下来的新数据，给一个高亮 class
     card.className = gun.isNew ? 'card new-data' : 'card';
+    
+    // 修改：点击卡片打开详情面板
+    card.onclick = function() {
+      openDetailModal(gun);
+    };
+
     card.innerHTML = `
       <div class="card-header">
         <span class="gun-name">${gun.name}</span>
@@ -421,11 +449,11 @@ function renderCards(data) {
       <div class="gun-desc">${gun.desc}</div>
       <div class="code-box">
         <div class="code-text" title="${gun.code}">${gun.code}</div>
-        <button class="copy-btn" onclick="copyCode(this, '${gun.code}')">COPY</button>
+        <!-- 阻止冒泡，防止点击按钮时触发两次复制 -->
+        <button class="copy-btn" onclick="event.stopPropagation(); copyCode(this, '${gun.code}')">COPY</button>
       </div>
     `;
     grid.appendChild(card);
-    // 渲染完移除标记，防止下次渲染一直闪
     if(gun.isNew) delete gun.isNew; 
   });
 }
@@ -447,7 +475,14 @@ typeFilter.addEventListener('change', filterData);
 window.copyCode = function(btnElement, code) {
   const tempInput = document.createElement("input"); tempInput.value = code;
   document.body.appendChild(tempInput); tempInput.select(); document.execCommand("copy"); document.body.removeChild(tempInput);
-  const originalText = btnElement.innerText; btnElement.innerText = "COPIED"; btnElement.classList.add("copied");
+  
+  const originalText = btnElement.innerText; 
+  btnElement.innerText = "COPIED"; 
+  btnElement.classList.add("copied");
+  
+  // 额外弹窗提示
+  showToast(`已成功复制 [${code}] 至剪贴板`, "success");
+
   setTimeout(() => { btnElement.innerText = originalText; btnElement.classList.remove("copied"); }, 2000);
 };
 
@@ -530,6 +565,27 @@ submitCodeBtn.addEventListener('click', () => {
   modalOverlay.classList.remove('active');
   showToast("上传成功：蓝图已成功写入本地安全数据库。", "success");
 });
+
+// --- 详情模态框逻辑 ---
+const detailModal = document.getElementById('detailModal');
+const closeDetailBtn = document.getElementById('closeDetailBtn');
+
+function openDetailModal(gun) {
+  document.getElementById('detailName').innerText = gun.name;
+  document.getElementById('detailType').innerText = gun.typeName;
+  document.getElementById('detailDesc').innerText = gun.desc;
+  document.getElementById('detailCode').innerText = gun.code;
+  
+  const copyBtn = document.getElementById('detailCopyBtn');
+  copyBtn.onclick = function() {
+    copyCode(this, gun.code);
+  };
+  
+  detailModal.classList.add('active');
+}
+
+closeDetailBtn.addEventListener('click', () => detailModal.classList.remove('active'));
+detailModal.addEventListener('click', (e) => { if (e.target === detailModal) detailModal.classList.remove('active'); });
 
 // 初始渲染
 renderCards(gunData);
