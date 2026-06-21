@@ -2,10 +2,12 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>天道三百年 · 不良人工具站</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Archive</title>
 
 <style>
+
 *{
 margin:0;
 padding:0;
@@ -13,218 +15,166 @@ box-sizing:border-box;
 }
 
 body{
-font-family:"Microsoft YaHei";
-background:
-linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.85)),
-url("https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1600");
-background-size:cover;
-background-position:center;
-background-attachment:fixed;
+background:#000;
 color:white;
-min-height:100vh;
+font-family:Arial,sans-serif;
+overflow-x:hidden;
 }
 
-header{
+.hero{
+height:100vh;
+background:url("images/bg.jpg") center center/cover no-repeat;
+position:relative;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.hero::before{
+content:"";
+position:absolute;
+inset:0;
+background:rgba(0,0,0,.45);
+backdrop-filter:blur(2px);
+}
+
+.content{
+position:relative;
+z-index:2;
 text-align:center;
-padding:60px 20px;
 }
 
 h1{
-font-size:48px;
-color:#d4af37;
-margin-bottom:15px;
+font-size:5rem;
+letter-spacing:8px;
 }
 
 .subtitle{
-font-size:18px;
-opacity:.8;
+margin-top:15px;
+color:#ccc;
+letter-spacing:4px;
 }
 
-.container{
-max-width:1200px;
-margin:auto;
-padding:20px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:20px;
+.enter{
+margin-top:40px;
+display:inline-block;
+padding:12px 40px;
+border:1px solid #fff;
+cursor:pointer;
+transition:.3s;
+}
+
+.enter:hover{
+background:white;
+color:black;
+}
+
+.section{
+min-height:100vh;
+padding:120px 10%;
+background:#050505;
+border-top:1px solid #222;
+}
+
+.archive{
+font-size:14px;
+color:#888;
+letter-spacing:3px;
+}
+
+.title{
+font-size:3rem;
+margin-top:10px;
+margin-bottom:30px;
 }
 
 .card{
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(12px);
-border:1px solid rgba(255,255,255,.15);
-border-radius:20px;
-padding:20px;
+background:#111;
+padding:30px;
+margin-top:20px;
+border:1px solid #222;
+transition:.3s;
 }
 
-.card h2{
-color:#d4af37;
-margin-bottom:15px;
+.card:hover{
+transform:translateY(-5px);
+border-color:#666;
 }
 
-#clock{
-font-size:24px;
-font-weight:bold;
-}
-
-textarea{
-width:100%;
-height:180px;
-background:rgba(0,0,0,.3);
-border:none;
-color:white;
-padding:10px;
-border-radius:10px;
-resize:none;
-}
-
-button{
-padding:10px 15px;
-border:none;
-border-radius:10px;
-background:#d4af37;
-cursor:pointer;
-font-weight:bold;
-margin-top:10px;
-}
-
-input{
-width:100%;
-padding:10px;
-border:none;
-border-radius:10px;
-margin-top:10px;
-}
-
-.password-box{
-margin-top:15px;
-font-size:20px;
-word-break:break-all;
-}
-
-.quote{
-font-size:18px;
-line-height:1.8;
-}
-
-.links a{
-display:block;
-color:#fff;
-text-decoration:none;
-padding:8px 0;
-}
-
-footer{
-text-align:center;
-padding:40px;
-opacity:.6;
-}
 </style>
 </head>
 
 <body>
 
-<header>
-<h1>天道三百年</h1>
-<p class="subtitle">终归一局棋</p>
-</header>
+<section class="hero">
 
-<div class="container">
+<div class="content">
 
-<div class="card">
-<h2>📅 江湖时辰</h2>
-<div id="clock"></div>
+<h1>ARCHIVE</h1>
+
+<div class="subtitle">
+ACCESS GRANTED
+</div>
+
+<div class="enter"
+onclick="window.scrollTo({
+top:window.innerHeight,
+behavior:'smooth'
+})">
+ENTER
+</div>
+
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="archive">
+ARCHIVE 01
+</div>
+
+<div class="title">
+关于我
 </div>
 
 <div class="card">
-<h2>📝 天机阁</h2>
-<textarea id="note"></textarea>
-<button onclick="saveNote()">保存便签</button>
+这里写你的介绍
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="archive">
+ARCHIVE 02
+</div>
+
+<div class="title">
+项目
 </div>
 
 <div class="card">
-<h2>⚔️ 不良人语录</h2>
-<div class="quote" id="quote"></div>
-<button onclick="newQuote()">换一句</button>
+项目展示区域
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="archive">
+ARCHIVE 03
+</div>
+
+<div class="title">
+工具箱
 </div>
 
 <div class="card">
-<h2>🔑 龙泉密匣</h2>
-<input id="length" type="number" value="16">
-<button onclick="generatePassword()">生成密码</button>
-<div class="password-box" id="password"></div>
+密码生成器 / 待办事项 / AI助手
 </div>
 
-<div class="card">
-<h2>📚 藏书阁</h2>
-<div class="links">
-<a href="https://github.com" target="_blank">GitHub</a>
-<a href="https://chatgpt.com" target="_blank">ChatGPT</a>
-<a href="https://store.steampowered.com" target="_blank">Steam</a>
-<a href="https://www.bilibili.com" target="_blank">Bilibili</a>
-</div>
-</div>
-
-</div>
-
-<footer>
-乾坤未定，你我皆是黑马
-</footer>
-
-<script>
-
-function updateClock(){
-const now=new Date();
-document.getElementById("clock").innerHTML=
-now.toLocaleString("zh-CN");
-}
-setInterval(updateClock,1000);
-updateClock();
-
-const note=document.getElementById("note");
-note.value=localStorage.getItem("jianghu_note")||"";
-
-function saveNote(){
-localStorage.setItem("jianghu_note",note.value);
-alert("已收入天机阁");
-}
-
-const quotes=[
-"天下大势，分久必合，合久必分。",
-"我命由我，不由天。",
-"天道有常，不为尧存，不为桀亡。",
-"世间之事，不过一局棋。",
-"江湖路远，且行且珍重。",
-"龙泉现世，天下再起风云。"
-];
-
-function newQuote(){
-const q=quotes[Math.floor(Math.random()*quotes.length)];
-document.getElementById("quote").innerText=q;
-}
-
-newQuote();
-
-function generatePassword(){
-
-const chars=
-"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-
-const len=
-parseInt(document.getElementById("length").value);
-
-let pwd="";
-
-for(let i=0;i<len;i++){
-pwd+=chars.charAt(
-Math.floor(Math.random()*chars.length)
-);
-}
-
-document.getElementById("password").innerText=pwd;
-}
-
-</script>
+</section>
 
 </body>
 </html>
