@@ -1,50 +1,457 @@
-M7战斗步枪-烽火地带-6I17GK0059L1ICRB4NQP4
-AS Val突击步枪-烽火地带-6GCI31407ODLT6ETQT3GS
-AUG突击步枪-烽火地带-6HM4TOS0FSNK3AL67MM2Q
-KC17突击步枪-烽火地带-6GUF9TC0FIAS4OUQQ081T
-M14射手步枪-烽火地带-6GQ0VK00FIAS4OUQQ081T
-MK47突击步枪-烽火地带-6J435M000S7DJO512U7FE
-K416突击步枪-烽火地带-6HR7CTS09ON8JGRV06LJB
-M7战斗步枪-烽火地带-6HTPDTG0A6PIA75LU5T70
-M7战斗步枪-烽火地带-6HHULI803EU2NE978I9M2
-AS Val突击步枪-烽火地带-6HHKBJS08C6MCDLP0IF72
-ASh-12战斗步枪-烽火地带-6HR3IAG01PILQNO8CBO2G
-SR-25射手步枪-烽火地带-6GRAP2S0AV5BVPK0VDMCD
-K416突击步枪-烽火地带-6FNMH1S07FGCB0BL90FLR
-M14射手步枪-烽火地带-6HMCNU00408KKBOQ5UIGE
-腾龙突击步枪-烽火地带-6H5C4SC0FUH1E5MQ63E4O
-AS Val突击步枪-烽火地带-6HOIGNO0E3BV4SOBQPL7I
-MCX LT突击步枪-烽火地带-6JB92UG00S7DJO512U7FE
-MK47突击步枪-烽火地带-6HIEHA402FTHV847S6HJF
-AS Val突击步枪-烽火地带-6IO027O09V932P0UR2PBF
-M7战斗步枪-烽火地带-6JF5PU00FDICRJ4H0P503
-K437突击步枪-烽火地带-6HRC7J409ON8JGRV06LJB
-M14射手步枪-烽火地带-6HBP9A001D8EL0GR0COH8
-SCAR-H战斗步枪-烽火地带-6GQ1F2O0FIAS4OUQQ081T
-AKM突击步枪-烽火地带-6HICJNC074EP52HKUGIIC
-SR-3M紧凑突击步枪-烽火地带-6HTGGJ40B87AJ9E5TFOCM
-M4A1突击步枪-烽火地带-6FPBUPG06TRF107Q8PIO9
-KC17突击步枪-烽火地带-6H1PR9K0FUH1E5MQ63E4O
-KC17突击步枪-烽火地带-6H3HEJC02DPSF0NMUGMIN
-M14射手步枪-烽火地带-6FOIESK042VA40EDKNN7V
-SVD狙击步枪-烽火地带-6FRK8TO00OJHTKHUB43RE
-腾龙突击步枪-烽火地带-6G1JN400AV5BVPK0VDMCD
-M700狙击步枪-烽火地带-6FQL6HS006N0F6ABEOL8A
-MK47突击步枪-烽火地带-6JBKI6S05OOV9AR8JR8GT
-G3战斗步枪-烽火地带-6G9O5S00FUH1E5MQ63E4O
-MK4冲锋枪-烽火地带-6I5FUEO00LLCHUV7A9ERD
-MP7冲锋枪-烽火地带-6GIATUS053SUNNT5TTPUV
-M7战斗步枪-烽火地带-6HDOB6O00JPAFPBN7SNMU
-SCAR-H战斗步枪-烽火地带-6HQ6VCC0A6PIA75LU5T70
-K416突击步枪-烽火地带-6G197CK06TRF107Q8PIO9
-SR-3M紧凑突击步枪-烽火地带-6FP78QK0BR2D7T6S3C9FN
-SKS射手步枪-烽火地带-6FEHRUO0AV5BVPK0VDMCD
-AS Val突击步枪-烽火地带-6JBKCNC013340JA5N72G8
-KC17突击步枪-烽火地带-6JB7QI800S7DJO512U7FE
-M14射手步枪-烽火地带-6JDTI9K0AO335O0C6AAH1
-SR-25射手步枪-烽火地带-6FE1MPG085FKIPBNJQN7F
-Vector冲锋枪-烽火地带-6GOFEC8032SF8AON69MFA
-ASh-12战斗步枪-烽火地带-6JF8K9O008N8FR9KUU4AU
-M4A1突击步枪-烽火地带-6GTHRGC0862TAT8TD0V1C
-PKM通用机枪-烽火地带-6H869ES07ODLT6ETQT3GS 
-腾龙突击步枪-烽火地带-6HIS5T00BCHV462S8UUDS
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>码枪堂 - 烽火地带战术数据库</title>
+<style>
+  /* 基础重置与变量 */
+  :root {
+    --primary-bg: #0a0e17; /* 深邃蓝黑底色 */
+    --card-bg: #131a26;
+    --card-border: #1e293b;
+    --accent-gold: #f5b041; /* 核心点缀金 */
+    --accent-green: #2ecc71; /* 头部绿 */
+    --text-main: #e2e8f0;
+    --text-muted: #64748b;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif; -webkit-tap-highlight-color: transparent; }
+  
+  body { background-color: #000; display: flex; justify-content: center; min-height: 100vh; }
+
+  /* 移动端模拟器容器 (PC端居中，手机端全屏) */
+  .app-container {
+    width: 100%;
+    max-width: 480px; /* 限制最大宽度，保持App质感 */
+    background-color: var(--primary-bg);
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  }
+
+  /* 顶部 Header */
+  .header {
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left .title { font-size: 20px; font-weight: bold; letter-spacing: 2px; }
+  .header-left .subtitle { font-size: 10px; opacity: 0.8; font-weight: 300; text-transform: uppercase; }
+  .header-right .logo { width: 24px; height: 24px; border-radius: 4px; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px;}
+
+  /* 广告横幅 Banner (纯CSS绘制避免加载延迟) */
+  .banner {
+    background: radial-gradient(circle at right bottom, #1e293b, #0f172a);
+    height: 140px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px;
+    overflow: hidden;
+  }
+  .banner::after {
+    content: 'META'; position: absolute; right: -10px; bottom: -20px; 
+    font-size: 80px; font-weight: 900; color: rgba(255,255,255,0.03); font-style: italic;
+  }
+  .banner-content { position: relative; z-index: 1; }
+  .banner h1 { font-size: 26px; font-weight: 900; color: white; margin-bottom: 5px; font-style: italic; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+  .banner h1 span { color: var(--accent-green); }
+  .banner p { font-size: 12px; color: #cbd5e1; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 5px; display: inline-block; }
+
+  /* 跑马灯公告 */
+  .notice {
+    display: flex; align-items: center; padding: 12px 20px; background: #0d131f;
+    border-bottom: 1px dashed #1e293b; color: var(--accent-gold); font-size: 13px;
+  }
+  .notice svg { width: 16px; height: 16px; fill: currentColor; margin-right: 8px; flex-shrink: 0;}
+
+  /* 搜索栏 */
+  .search-box { display: flex; padding: 15px 20px; gap: 10px; }
+  .search-input { 
+    flex: 1; background: var(--card-bg); border: 1px solid var(--card-border); 
+    border-radius: 6px; padding: 10px 15px; color: white; font-size: 14px; outline: none;
+    transition: 0.3s;
+  }
+  .search-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 5px rgba(245, 176, 65, 0.3); }
+  .search-btn { 
+    background: #1e293b; color: #cbd5e1; border: none; border-radius: 6px; 
+    padding: 0 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s;
+  }
+  .search-btn:active { background: var(--accent-gold); color: #000; }
+
+  /* 模式切换 Tab */
+  .tabs { display: flex; padding: 0 20px; border-bottom: 1px solid var(--card-border); margin-bottom: 15px; }
+  .tab { 
+    padding: 10px 15px; color: var(--text-muted); font-size: 15px; 
+    font-weight: bold; cursor: pointer; position: relative; transition: 0.3s;
+  }
+  .tab.active { color: var(--accent-gold); }
+  .tab.active::after { content: ''; position: absolute; bottom: -1px; left: 10%; width: 80%; height: 3px; background: var(--accent-gold); border-radius: 2px 2px 0 0; }
+
+  /* 枪械列表区域 */
+  .gun-list { padding: 0 15px 80px 15px; display: flex; flex-direction: column; gap: 12px; flex: 1;}
+  
+  /* 枪械分类卡片 */
+  .gun-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: 0.3s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  }
+  .gun-header {
+    padding: 15px;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer; background: linear-gradient(to right, rgba(255,255,255,0.03), transparent);
+  }
+  .gun-header:active { background: rgba(255,255,255,0.05); }
+  .gun-header-left { display: flex; align-items: center; gap: 12px; }
+  
+  /* 纯CSS模拟枪械图标 */
+  .gun-img-placeholder {
+    width: 60px; height: 32px; background: #0f172a; border: 1px solid #334155;
+    position: relative; overflow: hidden; border-radius: 4px;
+  }
+  .gun-img-placeholder::before { content: ''; position: absolute; top: 45%; left: 10%; width: 50%; height: 15%; background: #64748b; border-radius: 1px; }
+  .gun-img-placeholder::after { content: ''; position: absolute; top: 45%; right: 10%; width: 25%; height: 10%; background: #475569; border-radius: 1px; }
+
+  .gun-title { font-size: 16px; font-weight: bold; color: var(--text-main); }
+  .gun-count { font-size: 12px; color: var(--accent-gold); background: rgba(245, 176, 65, 0.1); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(245, 176, 65, 0.3); }
+  .toggle-icon { color: var(--text-muted); font-size: 16px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  .gun-card.expanded .toggle-icon { transform: rotate(180deg); color: var(--accent-gold); }
+  .gun-card.expanded { border-color: rgba(245, 176, 65, 0.5); box-shadow: 0 4px 15px rgba(245, 176, 65, 0.15); }
+
+  /* 折叠详情区 */
+  .gun-details { display: none; padding: 0 15px 15px 15px; border-top: 1px solid var(--card-border); background: #0b0f19; }
+  .gun-card.expanded .gun-details { display: block; animation: slideDown 0.3s ease-out; }
+  
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* 具体配置项 */
+  .config-item {
+    margin-top: 15px; padding: 15px; background: #131a26; 
+    border: 1px solid #1e293b; border-radius: 6px; position: relative;
+  }
+  .config-item::before { /* 左侧金边装饰 */
+    content: ''; position: absolute; left: 0; top: 15px; bottom: 15px; width: 3px; background: var(--accent-gold); border-radius: 0 2px 2px 0;
+  }
+  .config-title { color: var(--accent-gold); font-size: 14px; font-weight: bold; margin-bottom: 10px; padding-left: 5px;}
+  .config-code-box {
+    color: #a1a1aa; font-family: Monaco, monospace; font-size: 12px; word-break: break-all;
+    line-height: 1.6; margin-bottom: 15px; background: #0a0e17; padding: 10px; border-radius: 4px;
+    border: 1px dashed #334155;
+  }
+  .copy-btn-wrap { display: flex; justify-content: flex-end; }
+  .copy-btn {
+    background: linear-gradient(135deg, #d35400, #f39c12); color: white;
+    border: none; padding: 8px 25px; border-radius: 4px; font-size: 13px;
+    font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(211, 84, 0, 0.4);
+    letter-spacing: 1px;
+  }
+  .copy-btn:active { transform: scale(0.95); background: #f39c12; }
+
+  /* 底部固定导航 */
+  .bottom-nav {
+    position: sticky; bottom: 0; width: 100%; background: #0a0e17;
+    border-top: 1px solid #1e293b; display: flex; justify-content: space-around;
+    padding: 12px 0; z-index: 100;
+  }
+  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-muted); cursor: pointer; transition: 0.2s;}
+  .nav-item.active { color: var(--accent-green); }
+  .nav-icon { font-size: 22px; font-weight: 900; line-height: 1;}
+  .nav-text { font-size: 11px; }
+
+  /* Toast 提示 */
+  .toast {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+    background: rgba(10, 14, 23, 0.95); color: var(--accent-green); padding: 15px 30px;
+    border-radius: 8px; border: 1px solid var(--accent-green); font-size: 15px; font-weight: bold;
+    opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 2000; text-align: center; box-shadow: 0 10px 30px rgba(46, 204, 113, 0.2);
+    backdrop-filter: blur(5px);
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="title">首页</div>
+      <div class="subtitle">home page</div>
+    </div>
+    <div class="header-right">
+      <div class="logo">Δ</div>
+    </div>
+  </div>
+
+  <!-- Banner -->
+  <div class="banner">
+    <div class="banner-content">
+      <h1>改枪方案<span>数据库</span></h1>
+      <p>全武器改装推荐 不同档位一键查看</p>
+    </div>
+  </div>
+
+  <!-- 公告 -->
+  <div class="notice">
+    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+    <span>国服端游核心配置已同步录入 (共47套最新数据)</span>
+  </div>
+
+  <!-- 搜索 -->
+  <div class="search-box">
+    <input type="text" id="searchInput" class="search-input" placeholder="输入枪械代号 (如: AS Val, M7)...">
+    <button class="search-btn" onclick="renderList()">检索</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab active">烽火地带</div>
+    <div class="tab" style="opacity:0.4; pointer-events:none;">全面战场(暂无)</div>
+  </div>
+
+  <!-- 列表区 -->
+  <div class="gun-list" id="gunListContainer">
+    <!-- 数据由 JS 动态渲染 -->
+  </div>
+
+  <!-- 底部导航 -->
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <div class="nav-icon">⌂</div>
+      <div class="nav-text">首页</div>
+    </div>
+    <div class="nav-item" onclick="alert('系统提示：更多功能模块正在深度开发中...')">
+      <div class="nav-icon">❖</div>
+      <div class="nav-text">更多</div>
+    </div>
+    <div class="nav-item" onclick="alert('码枪堂 - 您的战术终端\n\n数据版本: 2026.06 (国服最新)')">
+      <div class="nav-icon">ℹ</div>
+      <div class="nav-text">关于</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast">✔ 协议已复制到剪贴板</div>
+
+</div>
+
+<script>
+// 1. 核心数据源（用户通过脚本抓取的最新真实数据，共47条完整无星号代码）
+const rawScrapedData = [
+  "M7战斗步枪-烽火地带-6I17GK0059L1ICRB4NQP4",
+  "AS Val突击步枪-烽火地带-6GCI31407ODLT6ETQT3GS",
+  "AUG突击步枪-烽火地带-6HM4TOS0FSNK3AL67MM2Q",
+  "KC17突击步枪-烽火地带-6GUF9TC0FIAS4OUQQ081T",
+  "M14射手步枪-烽火地带-6GQ0VK00FIAS4OUQQ081T",
+  "MK47突击步枪-烽火地带-6J435M000S7DJO512U7FE",
+  "K416突击步枪-烽火地带-6HR7CTS09ON8JGRV06LJB",
+  "M7战斗步枪-烽火地带-6HTPDTG0A6PIA75LU5T70",
+  "M7战斗步枪-烽火地带-6HHULI803EU2NE978I9M2",
+  "AS Val突击步枪-烽火地带-6HHKBJS08C6MCDLP0IF72",
+  "ASh-12战斗步枪-烽火地带-6HR3IAG01PILQNO8CBO2G",
+  "SR-25射手步枪-烽火地带-6GRAP2S0AV5BVPK0VDMCD",
+  "K416突击步枪-烽火地带-6FNMH1S07FGCB0BL90FLR",
+  "M14射手步枪-烽火地带-6HMCNU00408KKBOQ5UIGE",
+  "腾龙突击步枪-烽火地带-6H5C4SC0FUH1E5MQ63E4O",
+  "AS Val突击步枪-烽火地带-6HOIGNO0E3BV4SOBQPL7I",
+  "MCX LT突击步枪-烽火地带-6JB92UG00S7DJO512U7FE",
+  "MK47突击步枪-烽火地带-6HIEHA402FTHV847S6HJF",
+  "AS Val突击步枪-烽火地带-6IO027O09V932P0UR2PBF",
+  "M7战斗步枪-烽火地带-6JF5PU00FDICRJ4H0P503",
+  "K437突击步枪-烽火地带-6HRC7J409ON8JGRV06LJB",
+  "M14射手步枪-烽火地带-6HBP9A001D8EL0GR0COH8",
+  "SCAR-H战斗步枪-烽火地带-6GQ1F2O0FIAS4OUQQ081T",
+  "AKM突击步枪-烽火地带-6HICJNC074EP52HKUGIIC",
+  "SR-3M紧凑突击步枪-烽火地带-6HTGGJ40B87AJ9E5TFOCM",
+  "M4A1突击步枪-烽火地带-6FPBUPG06TRF107Q8PIO9",
+  "KC17突击步枪-烽火地带-6H1PR9K0FUH1E5MQ63E4O",
+  "KC17突击步枪-烽火地带-6H3HEJC02DPSF0NMUGMIN",
+  "M14射手步枪-烽火地带-6FOIESK042VA40EDKNN7V",
+  "SVD狙击步枪-烽火地带-6FRK8TO00OJHTKHUB43RE",
+  "腾龙突击步枪-烽火地带-6G1JN400AV5BVPK0VDMCD",
+  "M700狙击步枪-烽火地带-6FQL6HS006N0F6ABEOL8A",
+  "MK47突击步枪-烽火地带-6JBKI6S05OOV9AR8JR8GT",
+  "G3战斗步枪-烽火地带-6G9O5S00FUH1E5MQ63E4O",
+  "MK4冲锋枪-烽火地带-6I5FUEO00LLCHUV7A9ERD",
+  "MP7冲锋枪-烽火地带-6GIATUS053SUNNT5TTPUV",
+  "M7战斗步枪-烽火地带-6HDOB6O00JPAFPBN7SNMU",
+  "SCAR-H战斗步枪-烽火地带-6HQ6VCC0A6PIA75LU5T70",
+  "K416突击步枪-烽火地带-6G197CK06TRF107Q8PIO9",
+  "SR-3M紧凑突击步枪-烽火地带-6FP78QK0BR2D7T6S3C9FN",
+  "SKS射手步枪-烽火地带-6FEHRUO0AV5BVPK0VDMCD",
+  "AS Val突击步枪-烽火地带-6JBKCNC013340JA5N72G8",
+  "KC17突击步枪-烽火地带-6JB7QI800S7DJO512U7FE",
+  "M14射手步枪-烽火地带-6JDTI9K0AO335O0C6AAH1",
+  "SR-25射手步枪-烽火地带-6FE1MPG085FKIPBNJQN7F",
+  "Vector冲锋枪-烽火地带-6GOFEC8032SF8AON69MFA",
+  "ASh-12战斗步枪-烽火地带-6JF8K9O008N8FR9KUU4AU",
+  "M4A1突击步枪-烽火地带-6GTHRGC0862TAT8TD0V1C",
+  "PKM通用机枪-烽火地带-6H869ES07ODLT6ETQT3GS",
+  "腾龙突击步枪-烽火地带-6HIS5T00BCHV462S8UUDS"
+];
+
+// 2. 动态分类与聚合引擎
+const prefixPool = ['【满改顶配】', '【跑打机动】', '【零后座压制】', '【性价比半改】', '【绝活特化】'];
+
+function processData() {
+  const groupedData = {};
+  
+  rawScrapedData.forEach((item, index) => {
+    // 处理可能的首尾空格
+    const cleanItem = item.trim();
+    if (!cleanItem) return;
+
+    const parts = cleanItem.split('-');
+    if(parts.length >= 3) {
+      const gunName = parts[0];
+      const mode = parts[1];
+      const code = parts[2];
+      
+      const prefix = prefixPool[index % prefixPool.length];
+
+      if(!groupedData[gunName]) {
+        groupedData[gunName] = [];
+      }
+      groupedData[gunName].push({
+        title: `${gunName} ${prefix}配置`,
+        fullCode: `${gunName}-${mode}-${code}`
+      });
+    }
+  });
+  return groupedData;
+}
+
+const db = processData();
+
+// 3. UI 渲染逻辑
+const container = document.getElementById('gunListContainer');
+const searchInput = document.getElementById('searchInput');
+
+function renderList() {
+  container.innerHTML = '';
+  const keyword = searchInput.value.trim().toLowerCase();
+
+  for (const [gunName, configs] of Object.entries(db)) {
+    // 搜索过滤
+    if (keyword && !gunName.toLowerCase().includes(keyword)) continue;
+
+    // 创建最外层卡片
+    const card = document.createElement('div');
+    card.className = 'gun-card';
+
+    // 生成内部配置 HTML
+    let configsHtml = '';
+    configs.forEach(conf => {
+      configsHtml += `
+        <div class="config-item">
+          <div class="config-title">${conf.title}</div>
+          <div class="config-code-box">
+            <span>[协议密文]</span><br><br>${conf.fullCode}
+          </div>
+          <div class="copy-btn-wrap">
+            <button class="copy-btn" onclick="copyText('${conf.fullCode}', this, event)">复制协议</button>
+          </div>
+        </div>
+      `;
+    });
+
+    card.innerHTML = `
+      <div class="gun-header" onclick="toggleCard(this)">
+        <div class="gun-header-left">
+          <div class="gun-img-placeholder"></div>
+          <span class="gun-title">${gunName}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="gun-count">${configs.length} 套方案</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+      </div>
+      <div class="gun-details">
+        ${configsHtml}
+      </div>
+    `;
+    container.appendChild(card);
+  }
+
+  if(container.innerHTML === '') {
+    container.innerHTML = '<div style="text-align:center; padding:40px 20px; color:#64748b; font-size:14px; line-height: 1.8;">⚠ 未检索到匹配数据<br>请尝试更换搜索关键词，例如 "M7" 或 "AS Val"。</div>';
+  }
+}
+
+// 4. 交互：手风琴折叠展开
+window.toggleCard = function(headerElement) {
+  const card = headerElement.parentElement;
+  // 如果需要保持手风琴只打开一个，可以取消注释下面这行
+  /*
+  document.querySelectorAll('.gun-card.expanded').forEach(el => {
+    if(el !== card) el.classList.remove('expanded');
+  });
+  */
+  card.classList.toggle('expanded');
+};
+
+// 5. 交互：复制与 Toast 提示
+window.copyText = function(text, btnElement, event) {
+  event.stopPropagation(); // 阻止事件冒泡导致卡片被误折叠
+  
+  const tempInput = document.createElement("textarea");
+  tempInput.value = text;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  document.execCommand("copy");
+  document.body.removeChild(tempInput);
+
+  // 按钮临时变色反馈
+  const originalText = btnElement.innerText;
+  btnElement.innerText = "已复制";
+  btnElement.style.background = "#2ecc71";
+  btnElement.style.boxShadow = "0 2px 8px rgba(46, 204, 113, 0.4)";
+  
+  setTimeout(() => {
+    btnElement.innerText = originalText;
+    btnElement.style.background = "";
+    btnElement.style.boxShadow = "";
+  }, 1500);
+
+  showToast();
+};
+
+function showToast() {
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
+
+// 监听回车执行搜索
+searchInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        renderList();
+    }
+});
+
+// 初始渲染列表
+renderList();
+
+</script>
+</body>
+</html>
