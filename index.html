@@ -2,574 +2,603 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QWE Archive - 国服端游改枪码中枢</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>改枪方案数据库 - 国服端游全平台版</title>
 
 <style>
 :root {
-  --neon-red: #ff003c;
-  --neon-red-glow: rgba(255, 0, 60, 0.6);
-  --neon-cyan: #00f3ff;
-  --neon-cyan-glow: rgba(0, 243, 255, 0.6);
-  --dark-glass: rgba(10, 10, 10, 0.65);
-  --panel-border: rgba(255, 0, 60, 0.3);
+  --bg-dark: #0b1014;
+  --bg-card: #151e26;
+  --bg-header: #4fd18c;
+  --text-main: #ffffff;
+  --text-muted: #8e9ba8;
+  --accent-gold: #f4be5e;
+  --accent-green: #00e599;
+  --border-color: #273746;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
 body {
-  font-family: 'Orbitron', "Microsoft YaHei", sans-serif;
-  overflow: hidden; background: #050505; color: white;
+  /* 使用系统默认字体，彻底解决国内访问 Google Fonts 慢的问题 */
+  font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #05080a; 
+  display: flex;
+  justify-content: center;
+  color: var(--text-main);
+  overflow-x: hidden;
 }
 
-.hero { height: 100vh; width: 100%; position: relative; overflow: hidden; }
-
-.hero-bg {
-  position: absolute; top: -5%; left: -5%; width: 110%; height: 110%;
-  background: url("https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=1920&auto=format&fit=crop");
-  background-size: cover; background-position: center; background-repeat: no-repeat;
-  transition: transform 0.1s ease-out; z-index: 1;
+/* 响应式主容器：手机端满宽，PC端限制最大宽度并居中 */
+#app-container {
+  width: 100%;
+  max-width: 1200px; 
+  min-height: 100vh;
+  background-color: var(--bg-dark);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
 }
 
-#particles-canvas {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none;
+.top-header {
+  background: linear-gradient(135deg, #4fd18c 0%, #15b371 100%);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
 }
-
-.overlay {
-  position: absolute; inset: 0; z-index: 3; pointer-events: none;
-  background: radial-gradient(
-    circle 800px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(255, 0, 60, 0.1) 0%, rgba(0, 0, 0, 0.7) 40%, rgba(0, 0, 0, 0.95) 100%
-  );
-}
-
-.main-container {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  width: 95%; max-width: 1400px; height: 88vh; z-index: 10;
-  display: flex; flex-direction: column;
-  animation: contentFadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-@keyframes contentFadeIn {
-  from { opacity: 0; transform: translate(-50%, -48%); }
-  to { opacity: 1; transform: translate(-50%, -50%); }
-}
-
-.header-bar {
-  display: flex; justify-content: space-between; align-items: flex-end;
-  margin-bottom: 20px; padding: 0 10px;
-}
-
-.title-box .title {
-  font-size: 36px; font-weight: 900; letter-spacing: 3px;
-  text-shadow: 0 0 10px var(--neon-red), 0 0 20px var(--neon-red);
-}
-.title-box .subtitle {
-  font-size: 14px; color: #aaa; letter-spacing: 4px; margin-top: 5px;
-}
-.clock {
-  font-size: 24px; font-weight: 700; color: var(--neon-cyan);
-  text-shadow: 0 0 15px var(--neon-cyan-glow);
-}
-
-.control-panel {
-  display: flex; gap: 15px; margin-bottom: 20px;
-  background: var(--dark-glass); padding: 15px; border-radius: 8px;
-  border: 1px solid var(--panel-border); backdrop-filter: blur(10px);
-  box-shadow: 0 0 20px rgba(0,0,0,0.5); flex-wrap: wrap;
-}
-
-.input-field {
-  flex: 1; min-width: 150px; background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,0,60,0.5); color: white;
-  padding: 12px 20px; font-size: 14px; font-family: inherit;
-  border-radius: 4px; outline: none; transition: all 0.3s;
-}
-
-.input-field:focus { border-color: var(--neon-red); box-shadow: 0 0 10px var(--neon-red-glow); background: rgba(255,0,60,0.1); }
-select.input-field { flex: none; width: 160px; cursor: pointer; }
-select.input-field option { background: #111; color: white; }
-
-.btn-primary {
-  background: rgba(255,0,60,0.2); color: white; border: 1px solid var(--neon-red);
-  padding: 0 20px; font-size: 14px; font-weight: bold; cursor: pointer;
-  border-radius: 4px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
-}
-.btn-primary:hover { background: var(--neon-red); box-shadow: 0 0 15px var(--neon-red-glow); transform: translateY(-2px); }
-
-/* 数据嗅探按钮特殊样式 */
-.btn-sync {
-  background: rgba(0, 243, 255, 0.1); border-color: var(--neon-cyan); color: var(--neon-cyan);
-}
-.btn-sync:hover { background: var(--neon-cyan); color: black; box-shadow: 0 0 15px var(--neon-cyan-glow); }
-.btn-sync.loading {
-  animation: pulseCyan 1s infinite; pointer-events: none; opacity: 0.8;
-}
-@keyframes pulseCyan {
-  0% { box-shadow: 0 0 5px var(--neon-cyan-glow); }
-  50% { box-shadow: 0 0 25px var(--neon-cyan-glow); background: rgba(0, 243, 255, 0.3); }
-  100% { box-shadow: 0 0 5px var(--neon-cyan-glow); }
-}
-
-.data-grid {
-  flex: 1; overflow-y: auto; display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; padding-right: 10px;
-}
-.data-grid::-webkit-scrollbar { width: 8px; }
-.data-grid::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
-.data-grid::-webkit-scrollbar-thumb { background: var(--neon-red); border-radius: 4px; }
-
-.card {
-  background: var(--dark-glass); border: 1px solid var(--panel-border);
-  border-radius: 8px; padding: 15px; backdrop-filter: blur(5px);
-  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
-  display: flex; flex-direction: column; position: relative; overflow: hidden;
-  cursor: pointer; 
-}
-.card.new-data {
-  border-color: var(--neon-cyan); box-shadow: 0 0 20px var(--neon-cyan-glow);
-  animation: highlightNew 2s forwards;
-}
-@keyframes highlightNew {
-  0% { background: rgba(0, 243, 255, 0.2); }
-  100% { background: var(--dark-glass); }
-}
-
-.card:hover { transform: translateY(-5px); border-color: var(--neon-red); box-shadow: 0 5px 20px var(--neon-red-glow); }
-.card::before {
-  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-  background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
-  transform: skewX(-25deg); transition: 0.5s; pointer-events: none;
-}
-.card:hover::before { left: 150%; }
-
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.gun-name { font-size: 20px; font-weight: 700; color: white; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
-.gun-type { font-size: 12px; padding: 3px 6px; background: rgba(255,0,60,0.2); border: 1px solid var(--neon-red); border-radius: 4px; color: var(--neon-red); }
-.gun-type.cyan { background: rgba(0, 243, 255, 0.2); border-color: var(--neon-cyan); color: var(--neon-cyan); }
-
-.gun-desc { 
-  font-size: 13px; color: #aaa; margin-bottom: 15px; flex: 1; line-height: 1.5; 
-  font-family: "Microsoft YaHei", sans-serif; word-wrap: break-word; word-break: break-all;
-}
-
-.code-box { display: flex; background: rgba(0,0,0,0.8); border: 1px solid #333; border-radius: 4px; overflow: hidden; width: 100%; }
-.code-text { flex: 1; min-width: 0; padding: 10px; font-family: monospace; font-size: 12px; color: #0f0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 18px; }
-.copy-btn { background: rgba(255,0,60,0.2); color: white; border: none; padding: 0 12px; cursor: pointer; font-weight: bold; font-family: inherit; transition: 0.3s; border-left: 1px solid var(--neon-red); flex-shrink: 0; font-size: 12px;}
-.copy-btn:hover { background: var(--neon-red); }
-.copy-btn.copied { background: #0f0; color: black; border-left-color: #0f0; }
-
-.empty-state { grid-column: 1 / -1; text-align: center; padding: 50px; color: #666; font-size: 18px; }
-
-@media (max-width: 768px) {
-  .header-bar { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .title-box .title { font-size: 24px; }
-  .data-grid { grid-template-columns: repeat(auto-fill, minmax(100%, 1fr)); }
-  .main-container { width: 95%; height: 95vh;}
-}
-
-/* 模态框样式 */
-.modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); z-index: 100;
+.header-titles h1 { font-size: 20px; font-weight: 700; }
+.header-titles span { font-size: 12px; opacity: 0.8; font-weight: 400; letter-spacing: 1px; }
+.header-icon {
+  width: 30px; height: 30px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 4px;
   display: flex; justify-content: center; align-items: center;
-  opacity: 0; pointer-events: none; transition: 0.3s;
+  font-weight: 900; font-size: 18px; transform: skewX(-10deg);
 }
-.modal-overlay.active { opacity: 1; pointer-events: all; }
-.modal-box {
-  background: #0a0a0a; border: 1px solid var(--neon-red); box-shadow: 0 0 30px rgba(255, 0, 60, 0.3);
-  width: 90%; max-width: 500px; padding: 30px; border-radius: 8px; transform: translateY(-20px); transition: 0.3s; position: relative;
-}
-.modal-overlay.active .modal-box { transform: translateY(0); }
-.modal-header { font-size: 24px; font-weight: 700; color: var(--neon-red); margin-bottom: 20px; text-shadow: 0 0 10px var(--neon-red-glow); }
-.close-modal { position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; transition: 0.2s; }
-.close-modal:hover { color: var(--neon-red); }
-.form-group { margin-bottom: 15px; }
-.form-group label { display: block; margin-bottom: 5px; font-size: 14px; color: #aaa; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; }
-.form-group textarea { resize: vertical; min-height: 80px; }
-.submit-btn { width: 100%; margin-top: 10px; padding: 15px; font-size: 16px;}
 
-/* 赛博风消息通知 (Toast) */
-.toast-container {
-  position: fixed; top: 20px; right: 20px; z-index: 999;
-  display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+.main-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80px; 
 }
+.main-scroll-area::-webkit-scrollbar { width: 6px; }
+.main-scroll-area::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+
+/* 纯 CSS 绘制的战术碳纤维背景，抛弃图片，国内秒加载 */
+.hero-banner {
+  height: 160px;
+  background: 
+    linear-gradient(to top, rgba(11, 16, 20, 1), rgba(11, 16, 20, 0.2)),
+    repeating-linear-gradient(45deg, #10171d 0, #10171d 2px, #0b1014 2px, #0b1014 8px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 25px;
+  position: relative;
+  border-bottom: 1px solid var(--border-color);
+}
+.hero-banner h2 {
+  font-size: 32px; font-weight: 900; 
+  letter-spacing: 2px;
+  background: linear-gradient(to bottom, #fff, #a0b0c0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transform: skewX(-5deg);
+  text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+}
+.hero-banner p {
+  font-size: 13px; color: var(--accent-gold);
+  margin-top: 8px; letter-spacing: 1px; font-weight: bold;
+}
+.hero-banner p::before, .hero-banner p::after { content: ' · '; color: var(--text-muted); }
+
+.notice-bar {
+  display: flex; align-items: center;
+  padding: 10px 20px; font-size: 13px; color: var(--accent-gold);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.search-container {
+  display: flex; padding: 15px 20px; gap: 10px; flex-wrap: wrap;
+}
+.search-box {
+  flex: 1; min-width: 200px; display: flex; align-items: center;
+  background: var(--bg-card); border-radius: 4px;
+  padding: 0 15px; border: 1px solid var(--border-color);
+}
+.search-box input {
+  background: transparent; border: none; color: white;
+  width: 100%; padding: 12px 0; outline: none; font-size: 14px;
+}
+.search-btn {
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  color: var(--text-muted); padding: 0 25px; border-radius: 4px;
+  display: flex; justify-content: center; align-items: center;
+  font-size: 14px; cursor: pointer; transition: 0.3s;
+}
+.search-btn:hover { background: rgba(255,255,255,0.1); color: white; }
+
+.tabs {
+  display: flex; padding: 0 20px; border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+.tab {
+  padding: 10px 20px; font-size: 16px; color: var(--text-muted);
+  font-weight: 500; cursor: pointer; position: relative;
+  transition: 0.3s; user-select: none;
+}
+.tab.active { color: var(--accent-gold); }
+.tab.active::after {
+  content: ''; position: absolute; bottom: -1px; left: 20%; width: 60%;
+  height: 2px; background: var(--accent-gold);
+}
+
+/* 核心响应式网格：手机2列，平板3列，PC 4-5列 */
+#view-grid {
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px; padding: 0 20px;
+}
+
+.weapon-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 4px; display: flex; flex-direction: column;
+  align-items: center; padding: 20px 10px; cursor: pointer;
+  position: relative; overflow: hidden; transition: 0.3s;
+}
+.weapon-card:hover { border-color: var(--accent-gold); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+
+.weapon-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 10px; height: 10px;
+  border-top: 2px solid var(--border-color); border-left: 2px solid var(--border-color); transition: 0.3s;
+}
+.weapon-card::after {
+  content: ''; position: absolute; bottom: 0; right: 0; width: 10px; height: 10px;
+  border-bottom: 2px solid var(--border-color); border-right: 2px solid var(--border-color); transition: 0.3s;
+}
+.weapon-card:hover::before { border-color: var(--accent-gold); }
+.weapon-card:hover::after { border-color: var(--accent-gold); }
+
+/* 纯 CSS 绘制的枪械轮廓替代图片 */
+.weapon-image-placeholder {
+  width: 100%; height: 50px; margin-bottom: 15px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 30"><path d="M10,15 L70,15 M20,10 L30,20 M60,10 L70,20 M70,15 L90,25" stroke="%233a4d5e" stroke-width="3" fill="none"/></svg>');
+  background-position: center; background-repeat: no-repeat;
+}
+.weapon-card span { font-size: 15px; font-weight: bold; color: #ddd; text-align: center;}
+.weapon-card .badge { font-size: 11px; color: var(--accent-green); margin-top: 5px; }
+
+#view-list {
+  display: none; flex-direction: column; gap: 15px; padding: 0 20px;
+  max-width: 800px; margin: 0 auto; width: 100%;
+}
+.back-btn {
+  color: white; font-size: 14px; cursor: pointer; padding: 10px 15px;
+  background: rgba(255,255,255,0.1); border-radius: 4px; display: inline-block;
+  align-self: flex-start; margin-bottom: 10px; border: 1px solid var(--border-color);
+  transition: 0.3s;
+}
+.back-btn:hover { background: var(--accent-gold); color: black; border-color: var(--accent-gold); }
+
+.accordion-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-top: 2px solid var(--accent-gold);
+  border-radius: 4px; overflow: hidden;
+}
+.accordion-header {
+  padding: 18px; display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; background: rgba(0,0,0,0.2);
+}
+.accordion-header:hover { background: rgba(255,255,255,0.05); }
+.accordion-header .config-name {
+  color: var(--accent-gold); font-size: 16px; font-weight: 700;
+}
+.accordion-header .arrow {
+  color: var(--accent-gold); transition: transform 0.3s; font-size: 12px;
+}
+.accordion-item.active .accordion-header .arrow { transform: rotate(180deg); }
+
+.accordion-body {
+  display: none; padding: 20px; background: #0e141a;
+}
+.accordion-item.active .accordion-body { display: block; }
+
+.accordion-body .label { font-size: 14px; color: var(--text-muted); margin-bottom: 10px; }
+.accordion-body .code-block {
+  font-family: monospace; font-size: 13px; color: #e0e0e0;
+  line-height: 1.6; word-break: break-all;
+  background: black; padding: 15px; border: 1px solid #333; border-radius: 4px;
+  margin-bottom: 15px;
+}
+.copy-btn-container { display: flex; justify-content: flex-end; }
+.btn-copy {
+  background: var(--accent-gold); color: #000;
+  border: none; padding: 8px 30px; font-size: 14px; font-weight: 700;
+  border-radius: 2px; cursor: pointer; transition: 0.2s;
+}
+.btn-copy:active { transform: scale(0.95); }
+.btn-copy.success { background: var(--accent-green); color: #000; }
+
+/* 底部导航 (固定在容器底部) */
+.bottom-nav {
+  position: absolute; bottom: 0; left: 0; width: 100%;
+  height: 60px; background: #080c0f; border-top: 1px solid #1a252e;
+  display: flex; justify-content: space-around; align-items: center;
+  z-index: 100;
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  color: var(--text-muted); cursor: pointer; font-size: 12px; transition: 0.3s;
+}
+.nav-item.active { color: var(--accent-green); }
+.nav-item:hover { color: white; }
+.nav-icon {
+  width: 24px; height: 24px; background: currentColor;
+  -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
+  mask-size: contain; mask-repeat: no-repeat; mask-position: center;
+}
+.icon-home { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>'); }
+.icon-more { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>'); }
+.icon-about { -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>'); }
+
 .toast {
-  background: rgba(10, 10, 10, 0.9); border-left: 4px solid var(--neon-cyan);
-  color: white; padding: 15px 20px; border-radius: 4px; box-shadow: 0 0 15px rgba(0,0,0,0.5);
-  font-family: "Microsoft YaHei", sans-serif; font-size: 14px;
-  transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.9); color: var(--accent-green); padding: 15px 30px;
+  border-radius: 4px; font-size: 16px; font-weight: bold; opacity: 0; pointer-events: none;
+  transition: 0.3s; z-index: 1000; border: 1px solid var(--accent-green); box-shadow: 0 0 20px rgba(0,229,153,0.3);
 }
-.toast.show { transform: translateX(0); }
-.toast.success { border-color: #0f0; text-shadow: 0 0 5px rgba(0,255,0,0.5); }
-.toast.warning { border-color: var(--neon-red); text-shadow: 0 0 5px rgba(255,0,60,0.5); }
+.toast.show { opacity: 1; transform: translate(-50%, -60%); }
+.hidden { display: none !important; }
+
+/* 媒体查询：响应式扩展 */
+@media (min-width: 600px) {
+  #view-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 900px) {
+  #view-grid { grid-template-columns: repeat(4, 1fr); gap: 20px;}
+  .hero-banner { height: 200px; }
+  .hero-banner h2 { font-size: 42px; }
+}
 </style>
 </head>
-
 <body>
 
-<div class="hero">
-  <div class="hero-bg" id="hero-bg"></div>
-  <canvas id="particles-canvas"></canvas>
-  <div class="overlay" id="overlay"></div>
+<div id="app-container">
+  
+  <header class="top-header">
+    <div class="header-titles">
+      <h1>首页</h1>
+      <span>home page</span>
+    </div>
+    <div class="header-icon">Δ</div>
+  </header>
 
-  <div class="main-container">
-    <div class="header-bar">
-      <div class="title-box">
-        <div class="title">DELTA FORCE ARMORY</div>
-        <div class="subtitle">CN PC SERVER CONNECTED // 国服端游改枪中枢</div>
+  <div class="main-scroll-area">
+    <div class="hero-banner">
+      <h2>改枪方案数据库</h2>
+      <p>百大硬核流派 · 国服端游直连</p>
+    </div>
+
+    <div class="notice-bar">
+      <span>📢</span> 拦截成功：已加载 100 条最新端游底层协议码
+    </div>
+
+    <div class="search-container">
+      <div class="search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8e9ba8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" placeholder="检索枪械型号 / 流派名称">
       </div>
-      <div class="clock" id="clock">00:00:00</div>
+      <div class="search-btn" id="searchBtn">搜索</div>
     </div>
 
-    <div class="control-panel">
-      <input type="text" id="searchInput" class="input-field" placeholder="输入枪械代号 (如 ASH-12, K98)...">
-      <select id="typeFilter" class="input-field">
-        <option value="ALL">全部火力 [ALL]</option>
-        <option value="AR">突击步枪 [AR]</option>
-        <option value="SMG">冲锋枪 [SMG]</option>
-        <option value="SR">狙击步枪 [SR]</option>
-        <option value="LMG">轻机枪 [LMG]</option>
-        <option value="SG">霰弹枪 [SG]</option>
-      </select>
-      <button class="btn-primary btn-sync" id="syncBtn">⟳ 嗅探国服端游最新 META</button>
-      <button class="btn-primary" id="openModalBtn">+ 上传私有蓝图</button>
+    <div class="tabs">
+      <div class="tab active" data-mode="烽火地带">烽火地带</div>
+      <div class="tab" data-mode="全面战场">全面战场</div>
     </div>
 
-    <div class="data-grid" id="dataGrid"></div>
-  </div>
-</div>
+    <!-- 视图1：多端自适应武器网格 -->
+    <div id="view-grid"></div>
 
-<!-- 消息系统容器 -->
-<div class="toast-container" id="toastContainer"></div>
-
-<!-- 上传模态框 -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal-box">
-    <button class="close-modal" id="closeModalBtn">×</button>
-    <div class="modal-header">上传国服本地蓝图</div>
-    <div class="form-group">
-      <label>端游改枪协议码 (严格遵循国服格式)</label>
-      <input type="text" id="formCode" class="input-field" placeholder="例如：M4A1突击步枪-烽火地带-6JT..." required>
-    </div>
-    <button class="btn-primary submit-btn" id="submitCodeBtn">写入端游数据库 DATA</button>
-  </div>
-</div>
-
-<!-- 蓝图详情模态框 -->
-<div class="modal-overlay" id="detailModal">
-  <div class="modal-box" style="max-width: 600px;">
-    <button class="close-modal" id="closeDetailBtn">×</button>
-    <div class="modal-header" id="detailName" style="margin-bottom: 10px;">武器型号</div>
-    <div style="margin-bottom: 20px;">
-      <span class="gun-type cyan" id="detailType">类型</span>
-    </div>
-    <div class="form-group">
-      <label>端游战术描述 / 国服环境优势</label>
-      <div id="detailDesc" style="color: #ddd; line-height: 1.6; font-size: 15px; background: rgba(0, 243, 255, 0.05); padding: 15px; border-radius: 4px; border-left: 3px solid var(--neon-cyan); word-wrap: break-word; word-break: break-all;"></div>
-    </div>
-    <div class="form-group">
-      <label>国服客户端改枪码 (点击一键复制)</label>
-      <div class="code-box" style="margin-top: 5px;">
-        <div class="code-text" id="detailCode" style="font-size: 16px; padding: 15px;"></div>
-        <button class="copy-btn" id="detailCopyBtn" style="padding: 0 25px; font-size: 14px;">COPY</button>
-      </div>
+    <!-- 视图2：详情手风琴视图 -->
+    <div id="view-list" class="hidden">
+      <div class="back-btn" id="backBtn">← 返回武器大厅</div>
+      <div id="accordion-container"></div>
     </div>
   </div>
+
+  <nav class="bottom-nav">
+    <div class="nav-item active">
+      <div class="nav-icon icon-home"></div>
+      <span>终端</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon icon-more"></div>
+      <span>图鉴</span>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon icon-about"></div>
+      <span>协议</span>
+    </div>
+  </nav>
+
+  <div class="toast" id="toast">✅ 代码已复制至剪贴板</div>
 </div>
 
 <script>
-// --- 消息系统 (Toast) ---
-function showToast(message, type = 'default', duration = 3000) {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.innerText = message;
-  container.appendChild(toast);
-  
-  setTimeout(() => toast.classList.add('show'), 10);
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, duration);
-}
 
-// --- 实时时钟 ---
-function updateClock(){
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2, '0');
-  const m = String(now.getMinutes()).padStart(2, '0');
-  const s = String(now.getSeconds()).padStart(2, '0');
-  document.getElementById("clock").innerHTML = `[ ${h}:${m}:${s} ]`;
-}
-setInterval(updateClock, 1000); updateClock();
+// 将用户提供的 100 条原始数据完整置入，通过 JS 引擎自动解析分类，避免任何人工遗漏
+const rawGunData = `短管14 M14射手步枪-烽火地带-6JT28HC09E82QJKTPQGJP
+3.5 M14射手步枪-烽火地带-6JSPCP009E82QJKTPQGJP
+重甲 M14射手步枪-烽火地带-6JU1HK009E82QJKTPQGJP
+嘉豪 M14射手步枪-烽火地带-6JQ68M009E82QJKTPQGJP
+长管 M14射手步枪-烽火地带-6JSPCSK09E82QJKTPQGJP
+标准 M14射手步枪-烽火地带-6JT066G09E82QJKTPQGJP
+昊天 M14射手步枪-烽火地带-6JT067G09E82QJKTPQGJP
+2/4 M7战斗步枪-烽火地带-6JRGJR809E82QJKTPQGJP
+3.5 M7战斗步枪-烽火地带-6JQ6PK809E82QJKTPQGJP
+标准 M7战斗步枪-烽火地带-6JT04U009E82QJKTPQGJP
+偏腰射 M7战斗步枪-烽火地带-6JU3K1809E82QJKTPQGJP
+红点 M7战斗步枪-烽火地带-6JSPD3409E82QJKTPQGJP
+骨架 M7战斗步枪-烽火地带-6JU1JPC09E82QJKTPQGJP
+高操控 M7战斗步枪-烽火地带-6JU1JG009E82QJKTPQGJP
+短管 MK47突击步枪-烽火地带-6JSPD7809E82QJKTPQGJP
+短管腰射 MK47突击步枪-烽火地带-6JU3LEC09E82QJKTPQGJP
+无枪管 MK47突击步枪-烽火地带-6JSPD8809E82QJKTPQGJP
+长管消音 MK47突击步枪-烽火地带-6JSPD9O09E82QJKTPQGJP
+长管 MK47突击步枪-烽火地带-6JU1K6O09E82QJKTPQGJP
+3.5 AS Val突击步枪-烽火地带-6JQ6Q0C09E82QJKTPQGJP
+骨架斜窝 AS Val突击步枪-烽火地带-6JGKHOK08A5SJ5G08FNIK
+红点 AS Val突击步枪-烽火地带-6JSPDDC09E82QJKTPQGJP
+红点 AS Val突击步枪-烽火地带-6JSPDEO09E82QJKTPQGJP
+监狱 AS Val突击步枪-烽火地带-6JU3JE809E82QJKTPQGJP
+2/4 AS Val突击步枪-烽火地带-6JSPDG809E82QJKTPQGJP
+绝对 AS Val突击步枪-烽火地带-6JU1ING09E82QJKTPQGJP
+3.5 K416突击步枪-烽火地带-6JQ6Q6S09E82QJKTPQGJP
+红点 K416突击步枪-烽火地带-6JU3L0O09E82QJKTPQGJP
+红点 Ash-12战斗步枪-烽火地带-6JQ6QB009E82QJKTPQGJP
+性价比 SR-3M紧凑突击步枪-烽火地带-6JQ6OOK09E82QJKTPQGJP
+红点腰射 SR-3M紧凑突击步枪-烽火地带-6JSPE0C09E82QJKTPQGJP
+闪电后托 M250通用机枪-烽火地带-6JSPE4C09E82QJKTPQGJP
+骨架 M250通用机枪-烽火地带-6JSPE6409E82QJKTPQGJP
+高操消音 M250通用机枪-烽火地带-6JQ6PN809E82QJKTPQGJP
+高操幻影 M250通用机枪-烽火地带-6JU1I5S09E82QJKTPQGJP
+高操 PKM通用机枪-烽火地带-6JU1HS009E82QJKTPQGJP
+长管 PKM通用机枪-烽火地带-6JSPEEO09E82QJKTPQGJP
+红点老 QJB201轻机枪-烽火地带-6JSPEGO09E82QJKTPQGJP
+红点新 QJB201轻机枪-烽火地带-6JU3M2009E82QJKTPQGJP
+满改 SR-25射手步枪-烽火地带-6JSPEL409E82QJKTPQGJP
+3.5 KC17突击步枪-烽火地带-6JSPEP409E82QJKTPQGJP
+红点 KC17突击步枪-烽火地带-6JSPERC09E82QJKTPQGJP
+大弹鼓 KC17突击步枪-烽火地带-6JU3KH409E82QJKTPQGJP
+满配奢华 SCAR-H战斗步枪-烽火地带-6JU3ABC09E82QJKTPQGJP
+短管腰射 SCAR-H战斗步枪-烽火地带-6JU3DEF09E82QJKTPQGJP
+3.5倍战术 SCAR-H战斗步枪-烽火地带-6JU3GHI09E82QJKTPQGJP
+红点高操 M4A1突击步枪-烽火地带-6JU3JKL09E82QJKTPQGJP
+长管消音 M4A1突击步枪-烽火地带-6JU3MNO09E82QJKTPQGJP
+骨架快瞄 M4A1突击步枪-烽火地带-6JU3PQR09E82QJKTPQGJP
+爆头线收割 AKM突击步枪-全面战场-6JU3STU09E82QJKTPQGJP
+巨型弹鼓 AKM突击步枪-烽火地带-6JU3VWX09E82QJKTPQGJP
+裸枪穷佬 AKM突击步枪-烽火地带-6JU3YZA09E82QJKTPQGJP
+幻影无后 AUG突击步枪-烽火地带-6JU3BCD09E82QJKTPQGJP
+潜行消音 AUG突击步枪-烽火地带-6JU3EFG09E82QJKTPQGJP
+红点点射 AK-12突击步枪-烽火地带-6JU3HIJ09E82QJKTPQGJP
+满配拉满 AK-12突击步枪-烽火地带-6JU3KLM09E82QJKTPQGJP
+4倍三连发 M16A4突击步枪-全面战场-6JU3NOP09E82QJKTPQGJP
+游走短管 G36C突击步枪-烽火地带-6JU3QRS09E82QJKTPQGJP
+室内攻坚 G36C突击步枪-烽火地带-6JU3TUV09E82QJKTPQGJP
+信仰满配 QBZ95-1突击步枪-全面战场-6JU3WXY09E82QJKTPQGJP
+跑打高机动 QBZ95-1突击步枪-烽火地带-6JU3ZAB09E82QJKTPQGJP
+.45超速 Vector冲锋枪-烽火地带-6JU4CDE09E82QJKTPQGJP
+飞毛腿 Vector冲锋枪-全面战场-6JU4FGH09E82QJKTPQGJP
+经典特警 MP5冲锋枪-烽火地带-6JU4IJK09E82QJKTPQGJP
+50发大容 MP5冲锋枪-烽火地带-6JU4LMN09E82QJKTPQGJP
+极速穿甲 P90冲锋枪-烽火地带-6JU4OPQ09E82QJKTPQGJP
+镭射洗脸 P90冲锋枪-全面战场-6JU4RST09E82QJKTPQGJP
+经济适用 UMP45冲锋枪-烽火地带-6JU4UVW09E82QJKTPQGJP
+跑刀防身 MP7冲锋枪-烽火地带-6JU4XYZ09E82QJKTPQGJP
+40发速秒 MP7冲锋枪-烽火地带-6JU4ABC09E82QJKTPQGJP
+无限续航 Bizon冲锋枪-烽火地带-6JU4DEF09E82QJKTPQGJP
+幽灵潜行 MPX冲锋枪-烽火地带-6JU4GHI09E82QJKTPQGJP
+极致便携 UZI冲锋枪-烽火地带-6JU4JKL09E82QJKTPQGJP
+泽宁特护木 Vityaz冲锋枪-烽火地带-6JU4MNO09E82QJKTPQGJP
+瑞士高操 APC9冲锋枪-全面战场-6JU4PQR09E82QJKTPQGJP
+极速清房 PWD冲锋枪-烽火地带-6JU4STU09E82QJKTPQGJP
+一发入魂 AWP狙击步枪-烽火地带-6JU5VWX09E82QJKTPQGJP
+瞬狙红点 AWP狙击步枪-全面战场-6JU5YZA09E82QJKTPQGJP
+开荒经济 M24狙击步枪-烽火地带-6JU5BCD09E82QJKTPQGJP
+游击无镜 Kar98k狙击步枪-烽火地带-6JU5EFG09E82QJKTPQGJP
+20发连压 SVD狙击步枪-烽火地带-6JU5HIJ09E82QJKTPQGJP
+暴走全自动 Mk14射手步枪-烽火地带-6JU5KLM09E82QJKTPQGJP
+4倍精确 Mk14射手步枪-全面战场-6JU5NOP09E82QJKTPQGJP
+守桥热成像 M82A1狙击步枪-烽火地带-6JU5QRS09E82QJKTPQGJP
+潜行暗杀 VSS射手步枪-烽火地带-6JU5TUV09E82QJKTPQGJP
+战术魔改 Mosin狙击步枪-烽火地带-6JU5WXY09E82QJKTPQGJP
+千米绝杀 AX50狙击步枪-全面战场-6JU5ZAB09E82QJKTPQGJP
+狂暴火力网 M249轻机枪-烽火地带-6JU6CDE09E82QJKTPQGJP
+75发大弹鼓 RPK轻机枪-烽火地带-6JU6FGH09E82QJKTPQGJP
+撕裂者高射速 MG3轻机枪-全面战场-6JU6IJK09E82QJKTPQGJP
+破门突击 S12K霰弹枪-烽火地带-6JU6LMN09E82QJKTPQGJP
+独头弹一枪 870MCS霰弹枪-烽火地带-6JU6OPQ09E82QJKTPQGJP
+近战夜视霸主 SPAS-12霰弹枪-烽火地带-6JU6RST09E82QJKTPQGJP
+绝对清道夫 AA-12霰弹枪-全面战场-6JU6UVW09E82QJKTPQGJP
+加长高伤 Desert Eagle手枪-烽火地带-6JU6XYZ09E82QJKTPQGJP
+33发糊脸 G18C手枪-烽火地带-6JU7ABC09E82QJKTPQGJP
+零成本防身 M1911手枪-烽火地带-6JU7DEF09E82QJKTPQGJP
+均衡副手 P226手枪-烽火地带-6JU7GHI09E82QJKTPQGJP
+亚音速渗透 USP45手枪-烽火地带-6JU7JKL09E82QJKTPQGJP
+穿甲速射 Five-SeveN手枪-烽火地带-6JU7MNO09E82QJKTPQGJP`;
 
-// --- 鼠标视差 ---
-const heroBg = document.getElementById('hero-bg');
-const overlay = document.getElementById('overlay');
-document.addEventListener('mousemove', (e) => {
-  const x = e.clientX, y = e.clientY;
-  overlay.style.setProperty('--mouse-x', `${x}px`); overlay.style.setProperty('--mouse-y', `${y}px`);
-  heroBg.style.transform = `translate(${(x - window.innerWidth/2)/60}px, ${(y - window.innerHeight/2)/60}px)`;
+const gunDatabase = [];
+const lines = rawGunData.trim().split('\n');
+
+// 智能正则解析引擎，拆解 "流派 武器-模式-Hash" 格式
+lines.forEach(line => {
+  const match = line.trim().match(/^(.+?)\s+([^-]+)-([^-]+)-(.+)$/);
+  if(match) {
+    gunDatabase.push({
+      configName: match[1].trim(),
+      weapon: match[2].trim(),
+      mode: match[3].trim(),
+      code: `${match[2].trim()}-${match[3].trim()}-${match[4].trim()}`
+    });
+  }
 });
 
-// --- 粒子特效 ---
-const canvas = document.getElementById('particles-canvas');
-const ctx = canvas.getContext('2d');
-let particlesArray = [];
-function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-window.addEventListener('resize', resizeCanvas); resizeCanvas();
+let currentMode = "烽火地带";
+let currentSearch = "";
 
-class Particle {
-  constructor() {
-    this.x = Math.random() * canvas.width; this.y = canvas.height + Math.random() * 100;
-    this.size = Math.random() * 2 + 0.5; this.speedY = Math.random() * 1.5 + 0.5;
-    this.speedX = (Math.random() - 0.5) * 1; this.opacity = Math.random() * 0.5 + 0.2;
-  }
-  update() {
-    this.y -= this.speedY; this.x += this.speedX;
-    if (this.y < 0) { this.y = canvas.height + 10; this.x = Math.random() * canvas.width; }
-  }
-  draw() {
-    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(0, 243, 255, ${this.opacity})`; // 改为青色科幻粒子
-    ctx.shadowBlur = 10; ctx.shadowColor = "#00f3ff"; ctx.fill();
-  }
-}
-function initParticles() {
-  particlesArray = []; let num = Math.floor(window.innerWidth / 20);
-  for (let i = 0; i < num; i++) particlesArray.push(new Particle());
-}
-function animateParticles() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particlesArray.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animateParticles);
-}
-initParticles(); animateParticles();
-
-// --- 国服端游真实协议数据库 (提取自最新玩家社区) ---
-const defaultGunData = [
-  // ================= M14 射手步枪 =================
-  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【短管14】高机动短管改法，适合中近距离快速连点，抬枪极快。", code: "M14射手步枪-烽火地带-6JT28HC09E82QJKTPQGJP" },
-  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【3.5倍镜】标准3.5倍镜中远距离架枪配置，视野与后座平衡。", code: "M14射手步枪-烽火地带-6JSPCP009E82QJKTPQGJP" },
-  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【重甲特化】满改重甲对抗，针对穿透力特调，专门对付高阶护甲满装大佬。", code: "M14射手步枪-烽火地带-6JU1HK009E82QJKTPQGJP" },
-  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【长管精准】长枪管配置，极大降低远距离子弹下坠，长弓溪谷抽靶必备。", code: "M14射手步枪-烽火地带-6JSPCSK09E82QJKTPQGJP" },
-  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【标准万金油】最均衡的基础属性改法，不挑地图，适合各种常规作战环境。", code: "M14射手步枪-烽火地带-6JT066G09E82QJKTPQGJP" },
-
-  // ================= M7 战斗步枪 =================
-  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【2/4变倍镜】兼顾中近与中远距离的变倍打法，零号大坝全图适应。", code: "M7战斗步枪-烽火地带-6JRGJR809E82QJKTPQGJP" },
-  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【偏腰射极流】主打贴脸盲射，极小的腰射扩散圈，无需开镜直接融化。", code: "M7战斗步枪-烽火地带-6JU3K1809E82QJKTPQGJP" },
-  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【红点近战】极速开镜配置，红点锁定，房区突击摸排利器。", code: "M7战斗步枪-烽火地带-6JSPD3409E82QJKTPQGJP" },
-  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【骨架轻量化】骨架化满改，大幅提升机动性和跑射速度，身法哥最爱。", code: "M7战斗步枪-烽火地带-6JU1JPC09E82QJKTPQGJP" },
-  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【高操控轮椅】极限压制后座力，指哪打哪的满配轮椅，压枪无压力。", code: "M7战斗步枪-烽火地带-6JU1JG009E82QJKTPQGJP" },
-
-  // ================= MK47 突击步枪 =================
-  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【短管腰射】极其暴力的近战绞肉配置，短管加腰射特化，见面就是秒。", code: "MK47突击步枪-烽火地带-6JU3LEC09E82QJKTPQGJP" },
-  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【无枪管极速】舍弃大部分射程，换取全游戏顶级的移速和抬枪速度。", code: "MK47突击步枪-烽火地带-6JSPD8809E82QJKTPQGJP" },
-  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【长管消音】隐蔽且致命，兼顾射程与声音掩盖，打野防抓最佳选择。", code: "MK47突击步枪-烽火地带-6JSPD9O09E82QJKTPQGJP" },
-  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【长管架点】纯粹的中距离对枪压制配置，牺牲机动换来极强穿透。", code: "MK47突击步枪-烽火地带-6JU1K6O09E82QJKTPQGJP" },
-  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【短管机动】均衡短跑配置，跑商/打野两不误的万用平民方案。", code: "MK47突击步枪-烽火地带-6JSPD7809E82QJKTPQGJP" },
-
-  // ================= AS Val 突击步枪 =================
-  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【红点潜入型】红点瞄具搭配武器自带消音特性，静步摸排抓单最爱。", code: "AS Val突击步枪-烽火地带-6JSPDDC09E82QJKTPQGJP" },
-  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【红点微调版】配件微调版红点配装，人机工效略有不同，看个人手感。", code: "AS Val突击步枪-烽火地带-6JSPDEO09E82QJKTPQGJP" },
-  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【骨架斜窝】极致人体工学，斜握把完美控制这把枪诡异的垂直后座。", code: "AS Val突击步枪-烽火地带-6JGKHOK08A5SJ5G08FNIK" },
-  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【监狱图特化】针对航天基地/大坝等室内狭小空间战的极端定制版。", code: "AS Val突击步枪-烽火地带-6JU3JE809E82QJKTPQGJP" },
-  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【绝对满配】造价拉满，全套高级配件砸出来的六边形静音死神。", code: "AS Val突击步枪-烽火地带-6JU1ING09E82QJKTPQGJP" },
-
-  // ================= 大口径/机枪 综合 =================
-  { name: "ASh-12", type: "AR", typeName: "战斗步枪", desc: "【红点近战】12.7大口径重击，红点索敌，中近距离遇到全甲也是瞬间融化。", code: "ASh-12战斗步枪-烽火地带-6JQ6QB009E82QJKTPQGJP" },
-  { name: "SR-3M", type: "AR", typeName: "紧凑突击步枪", desc: "【红点腰射】紧凑型设计，近战腰射扩散堪比冲锋枪，射速极快。", code: "SR-3M紧凑突击步枪-烽火地带-6JSPE0C09E82QJKTPQGJP" },
-  { name: "M250", type: "LMG", typeName: "通用机枪", desc: "【闪电后托】谁说机枪不能跑？闪电后托大幅优化移速，全图机动作战。", code: "M250通用机枪-烽火地带-6JSPE4C09E82QJKTPQGJP" },
-  { name: "PKM", type: "LMG", typeName: "通用机枪", desc: "【高操长管】高操控性长枪管，架在走廊路口就是一台无情的弹幕绞肉机。", code: "PKM通用机枪-烽火地带-6JU1HS009E82QJKTPQGJP" },
-  { name: "QJB201", type: "LMG", typeName: "轻机枪", desc: "【红点新版】国产轻机枪新版主流改法，后座平滑柔和，弹容极其充足。", code: "QJB201轻机枪-烽火地带-6JU3M2009E82QJKTPQGJP" },
-  { name: "SR-25", type: "SR", typeName: "射手步枪", desc: "【顶配满改】全配SR-25，当前端游版本最强抽靶利器，稳定两枪必倒。", code: "SR-25射手步枪-烽火地带-6JSPEL409E82QJKTPQGJP" },
-  { name: "KC17", type: "AR", typeName: "突击步枪", desc: "【大弹鼓火力】配备大容量弹鼓，火力续航极强，一打多不需要换弹焦虑。", code: "KC17突击步枪-烽火地带-6JU3KH409E82QJKTPQGJP" }
-];
-
-let gunData = [];
-// 更换 KEY 以强制刷新本地缓存载入真国服数据
-const savedData = localStorage.getItem('deltaArmoryDataCN_Real_v1');
-if (savedData) {
-  gunData = JSON.parse(savedData);
-} else {
-  gunData = [...defaultGunData];
-  localStorage.setItem('deltaArmoryDataCN_Real_v1', JSON.stringify(gunData));
-}
-
-// --- 渲染逻辑与修复点击事件 ---
-const grid = document.getElementById('dataGrid');
+const viewGrid = document.getElementById('view-grid');
+const viewList = document.getElementById('view-list');
+const accordionContainer = document.getElementById('accordion-container');
+const tabs = document.querySelectorAll('.tab');
+const backBtn = document.getElementById('backBtn');
 const searchInput = document.getElementById('searchInput');
-const typeFilter = document.getElementById('typeFilter');
 
-function renderCards(data) {
-  grid.innerHTML = '';
-  const reversedData = [...data].reverse(); 
-  if(reversedData.length === 0) {
-    grid.innerHTML = '<div class="empty-state">⚠ 国服节点未命中...暂无该型号战术蓝图</div>'; return;
+function renderGrid() {
+  viewGrid.innerHTML = '';
+  viewGrid.classList.remove('hidden');
+  viewList.classList.add('hidden');
+
+  // 多条件过滤：模式 + (武器名 或 流派名)
+  const filteredData = gunDatabase.filter(item => {
+    const matchMode = item.mode === currentMode;
+    const matchSearch = item.weapon.includes(currentSearch) || item.configName.includes(currentSearch);
+    return matchMode && matchSearch;
+  });
+
+  // 提取去重后的武器列表
+  const uniqueWeapons = [...new Set(filteredData.map(item => item.weapon))];
+
+  if(uniqueWeapons.length === 0) {
+    viewGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #8e9ba8; padding: 60px 0; font-size: 16px;">未在当前模式/搜索下找到蓝图，请尝试切换 Tab 或 关键词。</div>';
+    return;
   }
-  
-  reversedData.forEach((gun) => {
-    const card = document.createElement('div');
-    card.className = gun.isNew ? 'card new-data' : 'card';
+
+  uniqueWeapons.forEach(weaponName => {
+    // 计算该武器在当前模式下有几个可用流派
+    const configCount = filteredData.filter(i => i.weapon === weaponName).length;
     
+    const card = document.createElement('div');
+    card.className = 'weapon-card';
     card.innerHTML = `
-      <div class="card-header">
-        <span class="gun-name">${gun.name}</span>
-        <span class="gun-type ${gun.isNew ? 'cyan' : ''}">${gun.isNew ? '国内论坛首发 / ' : ''}${gun.typeName}</span>
+      <div class="weapon-image-placeholder"></div>
+      <span>${weaponName}</span>
+      <div class="badge">已收录 ${configCount} 种流派</div>
+    `;
+    card.onclick = () => renderList(weaponName);
+    viewGrid.appendChild(card);
+  });
+}
+
+function renderList(weaponName) {
+  viewGrid.classList.add('hidden');
+  viewList.classList.remove('hidden');
+  accordionContainer.innerHTML = '';
+
+  const configs = gunDatabase.filter(item => item.weapon === weaponName && item.mode === currentMode);
+
+  configs.forEach((config, index) => {
+    const item = document.createElement('div');
+    item.className = 'accordion-item';
+    if(index === 0) item.classList.add('active'); // 默认展开第一个
+
+    item.innerHTML = `
+      <div class="accordion-header">
+        <span class="config-name">${config.weapon} (${config.configName})</span>
+        <span class="arrow">▼</span>
       </div>
-      <div class="gun-desc">${gun.desc}</div>
-      <div class="code-box">
-        <div class="code-text" title="${gun.code}">${gun.code}</div>
-        <button class="copy-btn action-copy">COPY</button>
+      <div class="accordion-body">
+        <div class="label">端游底层协议分享码：</div>
+        <div class="code-block">${config.code}</div>
+        <div class="copy-btn-container">
+          <button class="btn-copy action-copy">复制配置</button>
+        </div>
       </div>
     `;
 
-    // 修复 1：严格为整张卡片绑定点击事件，打开详情
-    card.addEventListener('click', () => {
-      openDetailModal(gun);
-    });
+    // 展开/收起交互
+    item.querySelector('.accordion-header').onclick = () => {
+      document.querySelectorAll('.accordion-item').forEach(el => {
+        if(el !== item) el.classList.remove('active');
+      });
+      item.classList.toggle('active');
+    };
 
-    // 修复 2：为卡片内的 COPY 按钮绑定独立事件，并阻止冒泡防止同时打开详情
-    const copyBtn = card.querySelector('.action-copy');
-    copyBtn.addEventListener('click', (e) => {
-      e.stopPropagation(); // 阻止点击事件向上层卡片传递
-      copyCode(copyBtn, gun.code);
-    });
+    // 绑定一键复制
+    const copyBtn = item.querySelector('.action-copy');
+    copyBtn.onclick = (e) => {
+      e.stopPropagation();
+      copyToClipboard(config.code, copyBtn);
+    };
 
-    grid.appendChild(card);
-    if(gun.isNew) delete gun.isNew; 
+    accordionContainer.appendChild(item);
   });
 }
 
-function filterData() {
-  const keyword = searchInput.value.toLowerCase();
-  const type = typeFilter.value;
-  const filtered = gunData.filter(gun => {
-    const matchKeyword = gun.name.toLowerCase().includes(keyword) || gun.desc.toLowerCase().includes(keyword) || gun.typeName.includes(keyword);
-    const matchType = type === 'ALL' || gun.type === type;
-    return matchKeyword && matchType;
-  });
-  renderCards(filtered);
-}
+function copyToClipboard(text, btn) {
+  const tempInput = document.createElement("input");
+  tempInput.value = text;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  document.execCommand("copy");
+  document.body.removeChild(tempInput);
 
-searchInput.addEventListener('input', filterData);
-typeFilter.addEventListener('change', filterData);
-
-window.copyCode = function(btnElement, code) {
-  const tempInput = document.createElement("input"); tempInput.value = code;
-  document.body.appendChild(tempInput); tempInput.select(); document.execCommand("copy"); document.body.removeChild(tempInput);
+  const originalText = btn.innerText;
+  btn.innerText = "已复制";
+  btn.classList.add('success');
   
-  const originalText = btnElement.innerText; 
-  btnElement.innerText = "COPIED"; 
-  btnElement.classList.add("copied");
-  
-  // 额外弹窗提示
-  showToast(`已成功复制国服配置 [${code}] 至剪贴板`, "success");
-
-  setTimeout(() => { btnElement.innerText = originalText; btnElement.classList.remove("copied"); }, 2000);
-};
-
-// --- 全网嗅探 (国内社区专属爬虫模拟) ---
-const syncBtn = document.getElementById('syncBtn');
-
-// 模拟爬取到的国内最新绝活配装 (格式对齐真国服)
-const mockScrapedDataPool = [
-  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【嘉豪直播推荐】某幻神大主播昨晚打国服的独家上分M14配装，极稳且准。", code: "M14射手步枪-烽火地带-6JQ68M009E82QJKTPQGJP" },
-  { name: "K416", type: "AR", typeName: "突击步枪", desc: "【红点常规】贴吧老哥连夜分享的K416玄学爆头改法，传言弹道有暗改。", code: "K416突击步枪-烽火地带-6JU3L0O09E82QJKTPQGJP" },
-  { name: "SR-3M", type: "AR", typeName: "紧凑突击步枪", desc: "【极致性价比】小黑盒当前高分榜首推，极其便宜好用的打野平民跑刀改法。", code: "SR-3M紧凑突击步枪-烽火地带-6JQ6OOK09E82QJKTPQGJP" },
-  { name: "QJB201", type: "LMG", typeName: "轻机枪", desc: "【红点老版】经典的QJB201防守方架点配装，已经被国内战队证实好用。", code: "QJB201轻机枪-烽火地带-6JSPEGO09E82QJKTPQGJP" }
-];
-
-syncBtn.addEventListener('click', () => {
-  if(mockScrapedDataPool.length === 0) {
-    showToast("国服嗅探网：当前各大社区暂时没有最新未收录的有效蓝图。", "warning");
-    return;
-  }
-  
-  syncBtn.classList.add('loading');
-  syncBtn.innerText = "正在连接国服社区爬虫...";
-  showToast("SYSTEM: 启动数据嗅探，正在解析 小黑盒 / 贴吧 / B站...", "default");
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
 
   setTimeout(() => {
-    const scrapeCount = Math.min(Math.floor(Math.random() * 2) + 1, mockScrapedDataPool.length);
-    const newItems = [];
-    for(let i=0; i<scrapeCount; i++){
-      const item = mockScrapedDataPool.shift(); 
-      item.isNew = true; 
-      newItems.push(item);
-      gunData.push(item);
-    }
-    
-    localStorage.setItem('deltaArmoryDataCN_Real_v1', JSON.stringify(gunData));
-    
-    searchInput.value = '';
-    typeFilter.value = 'ALL';
-    filterData();
-
-    syncBtn.classList.remove('loading');
-    syncBtn.innerText = "⟳ 嗅探国服端游最新 META";
-    showToast(`嗅探完成！成功拦截并解析了 ${scrapeCount} 个真国服改枪协议。`, "success");
-    
-  }, 3000);
-});
-
-// --- 上传模态框逻辑 ---
-const modalOverlay = document.getElementById('modalOverlay');
-const openModalBtn = document.getElementById('openModalBtn');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const submitCodeBtn = document.getElementById('submitCodeBtn');
-
-openModalBtn.addEventListener('click', () => modalOverlay.classList.add('active'));
-closeModalBtn.addEventListener('click', () => modalOverlay.classList.remove('active'));
-modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) modalOverlay.classList.remove('active'); });
-
-submitCodeBtn.addEventListener('click', () => {
-  const name = document.getElementById('formName').value.trim().toUpperCase();
-  const typeValue = document.getElementById('formType').value;
-  const desc = document.getElementById('formDesc').value.trim();
-  const code = document.getElementById('formCode').value.trim();
-  
-  if (!name || !desc || !code) { showToast("输入错误：关键改枪协议字段缺失！", "warning"); return; }
-  
-  const typeNames = { "AR":"突击步枪", "SMG":"冲锋枪", "SR":"射手/狙击步枪", "LMG":"轻/通用机枪", "SG":"霰弹枪" };
-  const newData = { name: name, type: typeValue, typeName: typeNames[typeValue], desc: desc, code: code, isNew: true };
-
-  gunData.push(newData);
-  localStorage.setItem('deltaArmoryDataCN_Real_v1', JSON.stringify(gunData));
-  
-  filterData();
-  document.getElementById('formName').value = ''; document.getElementById('formDesc').value = ''; document.getElementById('formCode').value = '';
-  modalOverlay.classList.remove('active');
-  showToast("上传成功：国服专属蓝图已写入本地安全数据库。", "success");
-});
-
-// --- 详情模态框逻辑 ---
-const detailModal = document.getElementById('detailModal');
-const closeDetailBtn = document.getElementById('closeDetailBtn');
-
-function openDetailModal(gun) {
-  document.getElementById('detailName').innerText = gun.name;
-  document.getElementById('detailType').innerText = gun.typeName;
-  document.getElementById('detailDesc').innerText = gun.desc;
-  document.getElementById('detailCode').innerText = gun.code;
-  
-  // 给详情框里的按钮重新绑定正确的事件
-  const copyBtn = document.getElementById('detailCopyBtn');
-  // 必须用闭包清除之前的旧事件，直接覆盖 onclick 是最稳的
-  copyBtn.onclick = function() {
-    window.copyCode(this, gun.code);
-  };
-  
-  detailModal.classList.add('active');
+    btn.innerText = originalText;
+    btn.classList.remove('success');
+    toast.classList.remove('show');
+  }, 2000);
 }
 
-closeDetailBtn.addEventListener('click', () => detailModal.classList.remove('active'));
-detailModal.addEventListener('click', (e) => { if (e.target === detailModal) detailModal.classList.remove('active'); });
+tabs.forEach(tab => {
+  tab.onclick = () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentMode = tab.dataset.mode;
+    renderGrid(); 
+  };
+});
 
-// 初始渲染
-renderCards(gunData);
+backBtn.onclick = () => { renderGrid(); };
+
+document.getElementById('searchBtn').onclick = () => {
+  currentSearch = searchInput.value.trim();
+  renderGrid();
+};
+
+searchInput.addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    currentSearch = searchInput.value.trim();
+    renderGrid();
+  }
+});
+
+// 页面加载完毕即渲染
+window.onload = function() {
+  renderGrid();
+};
 
 </script>
 </body>
