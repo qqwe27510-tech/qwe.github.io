@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QWE Archive - Delta Force Armory 2026</title>
+<title>QWE Archive - 国服端游改枪码中枢</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
@@ -125,7 +125,7 @@ select.input-field option { background: #111; color: white; }
   border-radius: 8px; padding: 15px; backdrop-filter: blur(5px);
   transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
   display: flex; flex-direction: column; position: relative; overflow: hidden;
-  cursor: pointer; /* 新增：让整张卡片显示可点击的手型指针 */
+  cursor: pointer; 
 }
 .card.new-data {
   border-color: var(--neon-cyan); box-shadow: 0 0 20px var(--neon-cyan-glow);
@@ -219,7 +219,7 @@ select.input-field option { background: #111; color: white; }
     <div class="header-bar">
       <div class="title-box">
         <div class="title">DELTA FORCE ARMORY</div>
-        <div class="subtitle">GLOBAL NETWORK CONNECTED // 2026 DATABASE</div>
+        <div class="subtitle">CN PC SERVER CONNECTED // 国服端游改枪中枢</div>
       </div>
       <div class="clock" id="clock">00:00:00</div>
     </div>
@@ -234,7 +234,7 @@ select.input-field option { background: #111; color: white; }
         <option value="LMG">轻机枪 [LMG]</option>
         <option value="SG">霰弹枪 [SG]</option>
       </select>
-      <button class="btn-primary btn-sync" id="syncBtn">⟳ 全网嗅探 2026 META</button>
+      <button class="btn-primary btn-sync" id="syncBtn">⟳ 嗅探国服端游最新 META</button>
       <button class="btn-primary" id="openModalBtn">+ 上传私有蓝图</button>
     </div>
 
@@ -245,34 +245,16 @@ select.input-field option { background: #111; color: white; }
 <!-- 消息系统容器 -->
 <div class="toast-container" id="toastContainer"></div>
 
-<!-- 模态框 -->
+<!-- 上传模态框 -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal-box">
     <button class="close-modal" id="closeModalBtn">×</button>
-    <div class="modal-header">上传本地蓝图</div>
+    <div class="modal-header">上传国服本地蓝图</div>
     <div class="form-group">
-      <label>枪械型号 (严格遵循游戏代号)</label>
-      <input type="text" id="formName" class="input-field" placeholder="例如: SCAR-H" required>
+      <label>端游改枪协议码 (严格遵循国服格式)</label>
+      <input type="text" id="formCode" class="input-field" placeholder="例如：M4A1突击步枪-烽火地带-6JT..." required>
     </div>
-    <div class="form-group">
-      <label>枪械分类</label>
-      <select id="formType" class="input-field">
-        <option value="AR">突击步枪 [AR]</option>
-        <option value="SMG">冲锋枪 [SMG]</option>
-        <option value="SR">狙击步枪 [SR]</option>
-        <option value="LMG">轻机枪 [LMG]</option>
-        <option value="SG">霰弹枪 [SG]</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>战术描述 / 核心优势</label>
-      <textarea id="formDesc" class="input-field" placeholder="例如：【零后座激光】放弃机动性换取绝对的精准度..." required></textarea>
-    </div>
-    <div class="form-group">
-      <label>Delta 协议改枪码</label>
-      <input type="text" id="formCode" class="input-field" placeholder="Delta-XXXX-XXXX" required>
-    </div>
-    <button class="btn-primary submit-btn" id="submitCodeBtn">写入数据库 DATA</button>
+    <button class="btn-primary submit-btn" id="submitCodeBtn">写入端游数据库 DATA</button>
   </div>
 </div>
 
@@ -285,11 +267,11 @@ select.input-field option { background: #111; color: white; }
       <span class="gun-type cyan" id="detailType">类型</span>
     </div>
     <div class="form-group">
-      <label>战术描述 / 核心优势</label>
+      <label>端游战术描述 / 国服环境优势</label>
       <div id="detailDesc" style="color: #ddd; line-height: 1.6; font-size: 15px; background: rgba(0, 243, 255, 0.05); padding: 15px; border-radius: 4px; border-left: 3px solid var(--neon-cyan); word-wrap: break-word; word-break: break-all;"></div>
     </div>
     <div class="form-group">
-      <label>Delta 协议改枪码</label>
+      <label>国服客户端改枪码 (点击一键复制)</label>
       <div class="code-box" style="margin-top: 5px;">
         <div class="code-text" id="detailCode" style="font-size: 16px; padding: 15px;"></div>
         <button class="copy-btn" id="detailCopyBtn" style="padding: 0 25px; font-size: 14px;">COPY</button>
@@ -366,61 +348,57 @@ function animateParticles() {
 }
 initParticles(); animateParticles();
 
-// --- 庞大的 2026 基础数据库 (含新增武器) ---
+// --- 国服端游真实协议数据库 (提取自最新玩家社区) ---
 const defaultGunData = [
-  // M4A1
-  { name: "M4A1", type: "AR", typeName: "突击步枪", desc: "【全能满改】2026常规赛热门，零后坐力中远距离对枪无敌，新手老手皆宜的轮椅枪。", code: "Delta-M4A1-Max01" },
-  { name: "M4A1", type: "AR", typeName: "突击步枪", desc: "【极速跑射】极致抬枪速度，主打高机动性，适合全图游走拉身位的突击兵。", code: "Delta-M4A1-Run02" },
-  { name: "M4A1", type: "AR", typeName: "突击步枪", desc: "【静音老六】一体消音管搭配亚音速弹，摸排偷背身专属，开枪没有声纹。", code: "Delta-M4A1-Sil03" },
-  { name: "M4A1", type: "AR", typeName: "突击步枪", desc: "【爆头特化】高倍镜+极高首发稳定性，专打中距离头甲，枪法好的大佬必备。", code: "Delta-M4A1-Head04" },
-  { name: "M4A1", type: "AR", typeName: "突击步枪", desc: "【平民高性价比】兼顾手感与极低的造价，跑刀起半装首选，死了不心疼。", code: "Delta-M4A1-Eco05" },
-  
-  // ASH-12 (2026大口径热门)
-  { name: "ASH-12", type: "AR", typeName: "突击步枪", desc: "【碎甲重击】12.7mm大口径，两枪必定碎六级甲，近战无可匹敌的压制力。", code: "Delta-ASH-Hvy01" },
-  { name: "ASH-12", type: "AR", typeName: "突击步枪", desc: "【后座抑制】强行用配件压低极其狂暴的后坐力，勉强能打中距离全自动。", code: "Delta-ASH-Ctrl02" },
-  { name: "ASH-12", type: "AR", typeName: "突击步枪", desc: "【CQB破门】短管无托改法，专门用于攻坚房区，见面瞬间蒸发对手。", code: "Delta-ASH-Cqb03" },
-  { name: "ASH-12", type: "AR", typeName: "突击步枪", desc: "【消音巨炮】罕见的巨型消音器搭配，极大的震慑力与诡异的隐蔽性。", code: "Delta-ASH-Sil04" },
-  { name: "ASH-12", type: "AR", typeName: "突击步枪", desc: "【半自动DMR】装配高倍镜当连狙使用，单发伤害极为离谱，适合架桥。", code: "Delta-ASH-Dmr05" },
+  // ================= M14 射手步枪 =================
+  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【短管14】高机动短管改法，适合中近距离快速连点，抬枪极快。", code: "M14射手步枪-烽火地带-6JT28HC09E82QJKTPQGJP" },
+  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【3.5倍镜】标准3.5倍镜中远距离架枪配置，视野与后座平衡。", code: "M14射手步枪-烽火地带-6JSPCP009E82QJKTPQGJP" },
+  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【重甲特化】满改重甲对抗，针对穿透力特调，专门对付高阶护甲满装大佬。", code: "M14射手步枪-烽火地带-6JU1HK009E82QJKTPQGJP" },
+  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【长管精准】长枪管配置，极大降低远距离子弹下坠，长弓溪谷抽靶必备。", code: "M14射手步枪-烽火地带-6JSPCSK09E82QJKTPQGJP" },
+  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【标准万金油】最均衡的基础属性改法，不挑地图，适合各种常规作战环境。", code: "M14射手步枪-烽火地带-6JT066G09E82QJKTPQGJP" },
 
-  // SCAR-H
-  { name: "SCAR-H", type: "AR", typeName: "突击步枪", desc: "【中远激光】7.62口径的精准代表，三发点射极稳，秒杀大部分连狙。", code: "Delta-SCA-Lzr01" },
-  { name: "SCAR-H", type: "AR", typeName: "突击步枪", desc: "【重装压制】扩容弹匣加重管，利用高肉伤在正面硬钢任何武器不落下风。", code: "Delta-SCA-Hvy02" },
-  { name: "SCAR-H", type: "AR", typeName: "突击步枪", desc: "【机动改装】拆除重型枪托，提高开镜移速，适合需要频繁拉扯的地形。", code: "Delta-SCA-Mov03" },
-  { name: "SCAR-H", type: "AR", typeName: "突击步枪", desc: "【全甲克星】M80高级穿甲弹特化，无视敌人护甲类型直接贯穿。", code: "Delta-SCA-Pen04" },
-  { name: "SCAR-H", type: "AR", typeName: "突击步枪", desc: "【近战腰射】非常规配装，依赖其单发高伤在极近距离盲射拼爆发。", code: "Delta-SCA-Hip05" },
+  // ================= M7 战斗步枪 =================
+  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【2/4变倍镜】兼顾中近与中远距离的变倍打法，零号大坝全图适应。", code: "M7战斗步枪-烽火地带-6JRGJR809E82QJKTPQGJP" },
+  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【偏腰射极流】主打贴脸盲射，极小的腰射扩散圈，无需开镜直接融化。", code: "M7战斗步枪-烽火地带-6JU3K1809E82QJKTPQGJP" },
+  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【红点近战】极速开镜配置，红点锁定，房区突击摸排利器。", code: "M7战斗步枪-烽火地带-6JSPD3409E82QJKTPQGJP" },
+  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【骨架轻量化】骨架化满改，大幅提升机动性和跑射速度，身法哥最爱。", code: "M7战斗步枪-烽火地带-6JU1JPC09E82QJKTPQGJP" },
+  { name: "M7", type: "AR", typeName: "战斗步枪", desc: "【高操控轮椅】极限压制后座力，指哪打哪的满配轮椅，压枪无压力。", code: "M7战斗步枪-烽火地带-6JU1JG009E82QJKTPQGJP" },
 
-  // MP7 (2026新神)
-  { name: "MP7", type: "SMG", typeName: "冲锋枪", desc: "【穿甲风暴】4.6mm特种弹，全游戏冲锋枪最强穿甲能力，融化高级甲。", code: "Delta-MP7-Pen01" },
-  { name: "MP7", type: "SMG", typeName: "冲锋枪", desc: "【无后座洗头】极高射速加上几乎为零的后座，专门瞄准头部一拉到底。", code: "Delta-MP7-Head02" },
-  { name: "MP7", type: "SMG", typeName: "冲锋枪", desc: "【极速跑刀伴侣】最轻配装，副武器槽绝佳选择，切枪极快救场专用。", code: "Delta-MP7-Lgt03" },
-  { name: "MP7", type: "SMG", typeName: "冲锋枪", desc: "【40发扩容】增强持续作战能力，一梭子足够带走两个满血敌人。", code: "Delta-MP7-Mag04" },
-  { name: "MP7", type: "SMG", typeName: "冲锋枪", desc: "【镭射盲射流】双紫镭射，配合滑铲在别人屏幕里乱飞同时精准开火。", code: "Delta-MP7-Hip05" },
+  // ================= MK47 突击步枪 =================
+  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【短管腰射】极其暴力的近战绞肉配置，短管加腰射特化，见面就是秒。", code: "MK47突击步枪-烽火地带-6JU3LEC09E82QJKTPQGJP" },
+  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【无枪管极速】舍弃大部分射程，换取全游戏顶级的移速和抬枪速度。", code: "MK47突击步枪-烽火地带-6JSPD8809E82QJKTPQGJP" },
+  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【长管消音】隐蔽且致命，兼顾射程与声音掩盖，打野防抓最佳选择。", code: "MK47突击步枪-烽火地带-6JSPD9O09E82QJKTPQGJP" },
+  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【长管架点】纯粹的中距离对枪压制配置，牺牲机动换来极强穿透。", code: "MK47突击步枪-烽火地带-6JU1K6O09E82QJKTPQGJP" },
+  { name: "MK47", type: "AR", typeName: "突击步枪", desc: "【短管机动】均衡短跑配置，跑商/打野两不误的万用平民方案。", code: "MK47突击步枪-烽火地带-6JSPD7809E82QJKTPQGJP" },
 
-  // SR-25
-  { name: "SR-25", type: "SR", typeName: "狙击步枪", desc: "【连狙天花板】射速与伤害的完美平衡，百米内两枪稳定放倒敌人。", code: "Delta-SR25-Top01" },
-  { name: "SR-25", type: "SR", typeName: "狙击步枪", desc: "【高倍率架点】配用最高倍数测距镜，极佳的弹道下坠表现，超远狙击必备。", code: "Delta-SR25-Lrg02" },
-  { name: "SR-25", type: "SR", typeName: "狙击步枪", desc: "【热成像猎手】搭配2026新款热成像瞄具，在树林或烟雾中无情猎杀。", code: "Delta-SR25-Thm03" },
-  { name: "SR-25", type: "SR", typeName: "狙击步枪", desc: "【近战特化DMR】换装全息或红点，把它当作单发伤害爆炸的突击步枪打。", code: "Delta-SR25-Cqb04" },
-  { name: "SR-25", type: "SR", typeName: "狙击步枪", desc: "【极致消音】全开火隐蔽，开火声音极小，适合打野玩家远程抽靶。", code: "Delta-SR25-Sil05" },
-  
-  // S12K
-  { name: "S12K", type: "SG", typeName: "霰弹枪", desc: "【20发拆迁】骇人听闻的20发弹鼓连喷，攻楼神器，按住左键不松手能清空一栋楼。", code: "Delta-S12K-20R01" },
-  { name: "S12K", type: "SG", typeName: "霰弹枪", desc: "【独头弹重狙】装配独头弹加高倍镜，一发入魂，把霰弹枪玩成重型狙击枪。", code: "Delta-S12K-Slg02" },
-  { name: "S12K", type: "SG", typeName: "霰弹枪", desc: "【极致连发】改装自动机加快射击间隔，遇到人瞬间把子弹全倾泻出去。", code: "Delta-S12K-Auto03" },
-  { name: "S12K", type: "SG", typeName: "霰弹枪", desc: "【重装防守】满改后坐力控制，卡在楼梯口一夫当关，谁冲谁死。", code: "Delta-S12K-Hvy04" },
-  { name: "S12K", type: "SG", typeName: "霰弹枪", desc: "【游击跑轰】机动性最强改装，打一枪换一个掩体，专门溜重装步兵。", code: "Delta-S12K-Hit05" }
+  // ================= AS Val 突击步枪 =================
+  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【红点潜入型】红点瞄具搭配武器自带消音特性，静步摸排抓单最爱。", code: "AS Val突击步枪-烽火地带-6JSPDDC09E82QJKTPQGJP" },
+  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【红点微调版】配件微调版红点配装，人机工效略有不同，看个人手感。", code: "AS Val突击步枪-烽火地带-6JSPDEO09E82QJKTPQGJP" },
+  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【骨架斜窝】极致人体工学，斜握把完美控制这把枪诡异的垂直后座。", code: "AS Val突击步枪-烽火地带-6JGKHOK08A5SJ5G08FNIK" },
+  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【监狱图特化】针对航天基地/大坝等室内狭小空间战的极端定制版。", code: "AS Val突击步枪-烽火地带-6JU3JE809E82QJKTPQGJP" },
+  { name: "AS Val", type: "AR", typeName: "突击步枪", desc: "【绝对满配】造价拉满，全套高级配件砸出来的六边形静音死神。", code: "AS Val突击步枪-烽火地带-6JU1ING09E82QJKTPQGJP" },
+
+  // ================= 大口径/机枪 综合 =================
+  { name: "ASh-12", type: "AR", typeName: "战斗步枪", desc: "【红点近战】12.7大口径重击，红点索敌，中近距离遇到全甲也是瞬间融化。", code: "ASh-12战斗步枪-烽火地带-6JQ6QB009E82QJKTPQGJP" },
+  { name: "SR-3M", type: "AR", typeName: "紧凑突击步枪", desc: "【红点腰射】紧凑型设计，近战腰射扩散堪比冲锋枪，射速极快。", code: "SR-3M紧凑突击步枪-烽火地带-6JSPE0C09E82QJKTPQGJP" },
+  { name: "M250", type: "LMG", typeName: "通用机枪", desc: "【闪电后托】谁说机枪不能跑？闪电后托大幅优化移速，全图机动作战。", code: "M250通用机枪-烽火地带-6JSPE4C09E82QJKTPQGJP" },
+  { name: "PKM", type: "LMG", typeName: "通用机枪", desc: "【高操长管】高操控性长枪管，架在走廊路口就是一台无情的弹幕绞肉机。", code: "PKM通用机枪-烽火地带-6JU1HS009E82QJKTPQGJP" },
+  { name: "QJB201", type: "LMG", typeName: "轻机枪", desc: "【红点新版】国产轻机枪新版主流改法，后座平滑柔和，弹容极其充足。", code: "QJB201轻机枪-烽火地带-6JU3M2009E82QJKTPQGJP" },
+  { name: "SR-25", type: "SR", typeName: "射手步枪", desc: "【顶配满改】全配SR-25，当前端游版本最强抽靶利器，稳定两枪必倒。", code: "SR-25射手步枪-烽火地带-6JSPEL409E82QJKTPQGJP" },
+  { name: "KC17", type: "AR", typeName: "突击步枪", desc: "【大弹鼓火力】配备大容量弹鼓，火力续航极强，一打多不需要换弹焦虑。", code: "KC17突击步枪-烽火地带-6JU3KH409E82QJKTPQGJP" }
 ];
 
 let gunData = [];
-const savedData = localStorage.getItem('deltaArmoryData2026');
+// 更换 KEY 以强制刷新本地缓存载入真国服数据
+const savedData = localStorage.getItem('deltaArmoryDataCN_Real_v1');
 if (savedData) {
   gunData = JSON.parse(savedData);
 } else {
   gunData = [...defaultGunData];
-  localStorage.setItem('deltaArmoryData2026', JSON.stringify(gunData));
+  localStorage.setItem('deltaArmoryDataCN_Real_v1', JSON.stringify(gunData));
 }
 
-// --- 渲染逻辑 ---
+// --- 渲染逻辑与修复点击事件 ---
 const grid = document.getElementById('dataGrid');
 const searchInput = document.getElementById('searchInput');
 const typeFilter = document.getElementById('typeFilter');
@@ -429,30 +407,37 @@ function renderCards(data) {
   grid.innerHTML = '';
   const reversedData = [...data].reverse(); 
   if(reversedData.length === 0) {
-    grid.innerHTML = '<div class="empty-state">⚠ 节点未命中...暂无该型号战术蓝图</div>'; return;
+    grid.innerHTML = '<div class="empty-state">⚠ 国服节点未命中...暂无该型号战术蓝图</div>'; return;
   }
   
   reversedData.forEach((gun) => {
     const card = document.createElement('div');
     card.className = gun.isNew ? 'card new-data' : 'card';
     
-    // 修改：点击卡片打开详情面板
-    card.onclick = function() {
-      openDetailModal(gun);
-    };
-
     card.innerHTML = `
       <div class="card-header">
         <span class="gun-name">${gun.name}</span>
-        <span class="gun-type ${gun.isNew ? 'cyan' : ''}">${gun.isNew ? '最新抓取 / ' : ''}${gun.typeName}</span>
+        <span class="gun-type ${gun.isNew ? 'cyan' : ''}">${gun.isNew ? '国内论坛首发 / ' : ''}${gun.typeName}</span>
       </div>
       <div class="gun-desc">${gun.desc}</div>
       <div class="code-box">
         <div class="code-text" title="${gun.code}">${gun.code}</div>
-        <!-- 阻止冒泡，防止点击按钮时触发两次复制 -->
-        <button class="copy-btn" onclick="event.stopPropagation(); copyCode(this, '${gun.code}')">COPY</button>
+        <button class="copy-btn action-copy">COPY</button>
       </div>
     `;
+
+    // 修复 1：严格为整张卡片绑定点击事件，打开详情
+    card.addEventListener('click', () => {
+      openDetailModal(gun);
+    });
+
+    // 修复 2：为卡片内的 COPY 按钮绑定独立事件，并阻止冒泡防止同时打开详情
+    const copyBtn = card.querySelector('.action-copy');
+    copyBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // 阻止点击事件向上层卡片传递
+      copyCode(copyBtn, gun.code);
+    });
+
     grid.appendChild(card);
     if(gun.isNew) delete gun.isNew; 
   });
@@ -481,62 +466,56 @@ window.copyCode = function(btnElement, code) {
   btnElement.classList.add("copied");
   
   // 额外弹窗提示
-  showToast(`已成功复制 [${code}] 至剪贴板`, "success");
+  showToast(`已成功复制国服配置 [${code}] 至剪贴板`, "success");
 
   setTimeout(() => { btnElement.innerText = originalText; btnElement.classList.remove("copied"); }, 2000);
 };
 
-// --- 全网嗅探 (爬虫模拟逻辑) ---
-// 由于纯前端无法真的跨域爬虫，我们用这套系统模拟演示连接后端爬虫的逻辑
+// --- 全网嗅探 (国内社区专属爬虫模拟) ---
 const syncBtn = document.getElementById('syncBtn');
 
-// 模拟爬虫抓取到的 2026 下半年绝活配装池
+// 模拟爬取到的国内最新绝活配装 (格式对齐真国服)
 const mockScrapedDataPool = [
-  { name: "P90", type: "SMG", typeName: "冲锋枪", desc: "【B站百万播放】某职业选手公开的最强P90身法流，专克各种老六。", code: "Delta-NET-P90X" },
-  { name: "AK-12", type: "AR", typeName: "突击步枪", desc: "【贴吧神秘代码】论坛狂推的AK12玄学爆头改法，传言隐藏后座力最低。", code: "Delta-NET-AK12H" },
-  { name: "AWM", type: "SR", typeName: "狙击步枪", desc: "【某鱼主播同款】瞬狙之王，完全放弃掩护，纯靠反应秒杀的激进改法。", code: "Delta-NET-AWM99" },
-  { name: "AUG", type: "AR", typeName: "突击步枪", desc: "【外网搬运】Reddit 玩家开发的 AUG 无脑腰射流，被外服玩家称为毒瘤。", code: "Delta-NET-AUGTX" }
+  { name: "M14", type: "SR", typeName: "射手步枪", desc: "【嘉豪直播推荐】某幻神大主播昨晚打国服的独家上分M14配装，极稳且准。", code: "M14射手步枪-烽火地带-6JQ68M009E82QJKTPQGJP" },
+  { name: "K416", type: "AR", typeName: "突击步枪", desc: "【红点常规】贴吧老哥连夜分享的K416玄学爆头改法，传言弹道有暗改。", code: "K416突击步枪-烽火地带-6JU3L0O09E82QJKTPQGJP" },
+  { name: "SR-3M", type: "AR", typeName: "紧凑突击步枪", desc: "【极致性价比】小黑盒当前高分榜首推，极其便宜好用的打野平民跑刀改法。", code: "SR-3M紧凑突击步枪-烽火地带-6JQ6OOK09E82QJKTPQGJP" },
+  { name: "QJB201", type: "LMG", typeName: "轻机枪", desc: "【红点老版】经典的QJB201防守方架点配装，已经被国内战队证实好用。", code: "QJB201轻机枪-烽火地带-6JSPEGO09E82QJKTPQGJP" }
 ];
 
 syncBtn.addEventListener('click', () => {
   if(mockScrapedDataPool.length === 0) {
-    showToast("云端爬虫：当前全网已无最新未收录蓝图。", "warning");
+    showToast("国服嗅探网：当前各大社区暂时没有最新未收录的有效蓝图。", "warning");
     return;
   }
   
   syncBtn.classList.add('loading');
-  syncBtn.innerText = "正在嗅探各大社区论坛...";
-  showToast("SYSTEM: 启动爬虫脚本，正在解析 Bilibili / Tieba 数据...", "default");
+  syncBtn.innerText = "正在连接国服社区爬虫...";
+  showToast("SYSTEM: 启动数据嗅探，正在解析 小黑盒 / 贴吧 / B站...", "default");
 
-  // 模拟网络请求和爬虫解析延迟 (3秒)
   setTimeout(() => {
-    // 每次随机"爬取"出 1-2 条最新数据
     const scrapeCount = Math.min(Math.floor(Math.random() * 2) + 1, mockScrapedDataPool.length);
     const newItems = [];
     for(let i=0; i<scrapeCount; i++){
-      const item = mockScrapedDataPool.shift(); // 从池子里拿出来
-      item.isNew = true; // 标记为新数据，触发高亮光效
+      const item = mockScrapedDataPool.shift(); 
+      item.isNew = true; 
       newItems.push(item);
       gunData.push(item);
     }
     
-    // 保存并渲染
-    localStorage.setItem('deltaArmoryData2026', JSON.stringify(gunData));
+    localStorage.setItem('deltaArmoryDataCN_Real_v1', JSON.stringify(gunData));
     
-    // 强制重置搜索栏，确保能看到新数据
     searchInput.value = '';
     typeFilter.value = 'ALL';
     filterData();
 
-    // 恢复UI
     syncBtn.classList.remove('loading');
-    syncBtn.innerText = "⟳ 全网嗅探 2026 META";
-    showToast(`嗅探完成！成功拦截并解析了 ${scrapeCount} 个最新热门改枪码。`, "success");
+    syncBtn.innerText = "⟳ 嗅探国服端游最新 META";
+    showToast(`嗅探完成！成功拦截并解析了 ${scrapeCount} 个真国服改枪协议。`, "success");
     
   }, 3000);
 });
 
-// --- 模态框逻辑 ---
+// --- 上传模态框逻辑 ---
 const modalOverlay = document.getElementById('modalOverlay');
 const openModalBtn = document.getElementById('openModalBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
@@ -552,18 +531,18 @@ submitCodeBtn.addEventListener('click', () => {
   const desc = document.getElementById('formDesc').value.trim();
   const code = document.getElementById('formCode').value.trim();
   
-  if (!name || !desc || !code) { showToast("输入错误：关键协议字段缺失！", "warning"); return; }
+  if (!name || !desc || !code) { showToast("输入错误：关键改枪协议字段缺失！", "warning"); return; }
   
-  const typeNames = { "AR":"突击步枪", "SMG":"冲锋枪", "SR":"狙击步枪", "LMG":"轻机枪", "SG":"霰弹枪" };
+  const typeNames = { "AR":"突击步枪", "SMG":"冲锋枪", "SR":"射手/狙击步枪", "LMG":"轻/通用机枪", "SG":"霰弹枪" };
   const newData = { name: name, type: typeValue, typeName: typeNames[typeValue], desc: desc, code: code, isNew: true };
 
   gunData.push(newData);
-  localStorage.setItem('deltaArmoryData2026', JSON.stringify(gunData));
+  localStorage.setItem('deltaArmoryDataCN_Real_v1', JSON.stringify(gunData));
   
   filterData();
   document.getElementById('formName').value = ''; document.getElementById('formDesc').value = ''; document.getElementById('formCode').value = '';
   modalOverlay.classList.remove('active');
-  showToast("上传成功：蓝图已成功写入本地安全数据库。", "success");
+  showToast("上传成功：国服专属蓝图已写入本地安全数据库。", "success");
 });
 
 // --- 详情模态框逻辑 ---
@@ -576,9 +555,11 @@ function openDetailModal(gun) {
   document.getElementById('detailDesc').innerText = gun.desc;
   document.getElementById('detailCode').innerText = gun.code;
   
+  // 给详情框里的按钮重新绑定正确的事件
   const copyBtn = document.getElementById('detailCopyBtn');
+  // 必须用闭包清除之前的旧事件，直接覆盖 onclick 是最稳的
   copyBtn.onclick = function() {
-    copyCode(this, gun.code);
+    window.copyCode(this, gun.code);
   };
   
   detailModal.classList.add('active');
