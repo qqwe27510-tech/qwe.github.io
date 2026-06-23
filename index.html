@@ -3,259 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>码枪堂 - 烽火地带战术数据库</title>
+<title>码枪堂 - 战术配置终端</title>
 <style>
-  /* 基础重置与变量 */
   :root {
-    --primary-bg: #0a0e17; /* 深邃蓝黑底色 */
-    --card-bg: #131a26;
-    --card-border: #1e293b;
-    --accent-gold: #f5b041; /* 核心点缀金 */
-    --accent-green: #2ecc71; /* 头部绿 */
+    --bg-base: #05080f;
+    --bg-surface: #0f1523;
+    --bg-surface-hover: #161e30;
+    --border-color: #212d45;
+    --border-glow: rgba(245, 176, 65, 0.4);
+    --accent-gold: #f5b041;
+    --accent-gold-dark: #d49533;
+    --accent-cyan: #00d2ff;
     --text-main: #e2e8f0;
-    --text-muted: #64748b;
+    --text-muted: #8b9bb4;
+    --font-mono: "Menlo", "Monaco", "Courier New", monospace;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif; -webkit-tap-highlight-color: transparent; }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, "Segoe UI", Roboto, "Microsoft YaHei", sans-serif; }
   
-  body { background-color: #000; display: flex; justify-content: center; min-height: 100vh; }
-
-  /* 移动端模拟器容器 (PC端居中，手机端全屏) */
-  .app-container {
-    width: 100%;
-    max-width: 480px; /* 限制最大宽度，保持App质感 */
-    background-color: var(--primary-bg);
-    position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+  body { 
+    background-color: var(--bg-base); 
+    color: var(--text-main);
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(0, 210, 255, 0.03), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(245, 176, 65, 0.03), transparent 25%);
+    background-attachment: fixed;
     min-height: 100vh;
-    box-shadow: 0 0 20px rgba(0,0,0,0.8);
-  }
-
-  /* 顶部 Header */
-  .header {
-    background: linear-gradient(135deg, #1abc9c, #16a085);
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-left .title { font-size: 20px; font-weight: bold; letter-spacing: 2px; }
-  .header-left .subtitle { font-size: 10px; opacity: 0.8; font-weight: 300; text-transform: uppercase; }
-  .header-right .logo { width: 24px; height: 24px; border-radius: 4px; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px;}
-
-  /* 广告横幅 Banner (纯CSS绘制避免加载延迟) */
-  .banner {
-    background: radial-gradient(circle at right bottom, #1e293b, #0f172a);
-    height: 140px;
-    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+  }
+
+  /* 自定义滚动条 */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-base); }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-gold); }
+
+  /* 导航栏 (电脑端展开，手机端适配) */
+  .navbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(5, 8, 15, 0.85); backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
     padding: 0 20px;
-    overflow: hidden;
   }
-  .banner::after {
-    content: 'META'; position: absolute; right: -10px; bottom: -20px; 
-    font-size: 80px; font-weight: 900; color: rgba(255,255,255,0.03); font-style: italic;
-  }
-  .banner-content { position: relative; z-index: 1; }
-  .banner h1 { font-size: 26px; font-weight: 900; color: white; margin-bottom: 5px; font-style: italic; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-  .banner h1 span { color: var(--accent-green); }
-  .banner p { font-size: 12px; color: #cbd5e1; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 5px; display: inline-block; }
-
-  /* 跑马灯公告 */
-  .notice {
-    display: flex; align-items: center; padding: 12px 20px; background: #0d131f;
-    border-bottom: 1px dashed #1e293b; color: var(--accent-gold); font-size: 13px;
-  }
-  .notice svg { width: 16px; height: 16px; fill: currentColor; margin-right: 8px; flex-shrink: 0;}
-
-  /* 搜索栏 */
-  .search-box { display: flex; padding: 15px 20px; gap: 10px; }
-  .search-input { 
-    flex: 1; background: var(--card-bg); border: 1px solid var(--card-border); 
-    border-radius: 6px; padding: 10px 15px; color: white; font-size: 14px; outline: none;
-    transition: 0.3s;
-  }
-  .search-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 5px rgba(245, 176, 65, 0.3); }
-  .search-btn { 
-    background: #1e293b; color: #cbd5e1; border: none; border-radius: 6px; 
-    padding: 0 20px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s;
-  }
-  .search-btn:active { background: var(--accent-gold); color: #000; }
-
-  /* 模式切换 Tab */
-  .tabs { display: flex; padding: 0 20px; border-bottom: 1px solid var(--card-border); margin-bottom: 15px; }
-  .tab { 
-    padding: 10px 15px; color: var(--text-muted); font-size: 15px; 
-    font-weight: bold; cursor: pointer; position: relative; transition: 0.3s;
-  }
-  .tab.active { color: var(--accent-gold); }
-  .tab.active::after { content: ''; position: absolute; bottom: -1px; left: 10%; width: 80%; height: 3px; background: var(--accent-gold); border-radius: 2px 2px 0 0; }
-
-  /* 枪械列表区域 */
-  .gun-list { padding: 0 15px 80px 15px; display: flex; flex-direction: column; gap: 12px; flex: 1;}
-  
-  /* 枪械分类卡片 */
-  .gun-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 6px;
-    overflow: hidden;
-    transition: 0.3s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  }
-  .gun-header {
-    padding: 15px;
+  .nav-container {
+    max-width: 1400px; margin: 0 auto; height: 70px;
     display: flex; justify-content: space-between; align-items: center;
-    cursor: pointer; background: linear-gradient(to right, rgba(255,255,255,0.03), transparent);
   }
-  .gun-header:active { background: rgba(255,255,255,0.05); }
-  .gun-header-left { display: flex; align-items: center; gap: 12px; }
-  
-  /* 纯CSS模拟枪械图标 */
-  .gun-img-placeholder {
-    width: 60px; height: 32px; background: #0f172a; border: 1px solid #334155;
-    position: relative; overflow: hidden; border-radius: 4px;
+  .nav-logo { display: flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 900; letter-spacing: 1px; color: white; }
+  .nav-logo span { color: var(--accent-gold); }
+  .nav-logo-icon { 
+    width: 32px; height: 32px; background: var(--accent-gold); color: #000;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; font-weight: 900; transform: skewX(-10deg);
   }
-  .gun-img-placeholder::before { content: ''; position: absolute; top: 45%; left: 10%; width: 50%; height: 15%; background: #64748b; border-radius: 1px; }
-  .gun-img-placeholder::after { content: ''; position: absolute; top: 45%; right: 10%; width: 25%; height: 10%; background: #475569; border-radius: 1px; }
-
-  .gun-title { font-size: 16px; font-weight: bold; color: var(--text-main); }
-  .gun-count { font-size: 12px; color: var(--accent-gold); background: rgba(245, 176, 65, 0.1); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(245, 176, 65, 0.3); }
-  .toggle-icon { color: var(--text-muted); font-size: 16px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-  .gun-card.expanded .toggle-icon { transform: rotate(180deg); color: var(--accent-gold); }
-  .gun-card.expanded { border-color: rgba(245, 176, 65, 0.5); box-shadow: 0 4px 15px rgba(245, 176, 65, 0.15); }
-
-  /* 折叠详情区 */
-  .gun-details { display: none; padding: 0 15px 15px 15px; border-top: 1px solid var(--card-border); background: #0b0f19; }
-  .gun-card.expanded .gun-details { display: block; animation: slideDown 0.3s ease-out; }
   
-  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .search-wrap { display: flex; gap: 10px; flex: 1; max-width: 500px; margin: 0 20px; }
+  .search-input {
+    flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
+    padding: 10px 20px; border-radius: 30px; color: white; outline: none; transition: 0.3s;
+  }
+  .search-input:focus { border-color: var(--accent-gold); background: rgba(255,255,255,0.1); }
 
-  /* 具体配置项 */
+  /* 横幅区域 */
+  .hero {
+    max-width: 1400px; margin: 30px auto; padding: 0 20px;
+    display: flex; flex-direction: column; gap: 15px;
+  }
+  .hero-title { font-size: 32px; font-weight: 900; font-style: italic; text-transform: uppercase; }
+  .hero-subtitle { color: var(--text-muted); font-size: 15px; }
+
+  /* 核心网格容器 (响应式魔法) */
+  .grid-container {
+    max-width: 1400px; margin: 0 auto; padding: 0 20px 60px 20px;
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); /* 桌面多列，手机自动单列 */
+    gap: 25px; align-items: start;
+  }
+
+  /* 枪械卡片 */
+  .weapon-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+  }
+  .weapon-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px var(--border-glow);
+  }
+  .weapon-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    opacity: 0; transition: 0.3s;
+  }
+  .weapon-card:hover::before { opacity: 1; }
+
+  /* 枪械图例展示区 (关键视觉升级) */
+  .weapon-visual {
+    height: 140px;
+    background: linear-gradient(135deg, #111827, #0a0e17);
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    display: flex; justify-content: center; align-items: center;
+    overflow: hidden;
+  }
+  /* 战术网格背景 */
+  .weapon-visual::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 20px 20px; z-index: 0;
+  }
+  .weapon-svg-container {
+    width: 80%; height: 80%; position: relative; z-index: 1;
+    display: flex; justify-content: center; align-items: center;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.8));
+    opacity: 0.8; transition: 0.3s;
+  }
+  .weapon-card:hover .weapon-svg-container { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 10px rgba(245, 176, 65, 0.3)); }
+  
+  /* 武器类型标签 */
+  .weapon-type-badge {
+    position: absolute; top: 10px; right: 10px; z-index: 2;
+    background: rgba(0,0,0,0.6); border: 1px solid #334155;
+    padding: 3px 8px; border-radius: 4px; font-size: 11px; color: var(--accent-cyan); font-weight: bold;
+  }
+
+  .weapon-info { padding: 15px; }
+  .weapon-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+  .weapon-name { font-size: 20px; font-weight: 900; color: white; letter-spacing: 0.5px;}
+  .variant-count { font-size: 12px; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 20px;}
+
+  /* 方案列表容器 (固定最大高度，内部滚动，保持卡片规整) */
+  .variants-list {
+    display: flex; flex-direction: column; gap: 10px;
+    max-height: 250px; overflow-y: auto; padding-right: 5px;
+  }
+
+  /* 单个配置项 */
   .config-item {
-    margin-top: 15px; padding: 15px; background: #131a26; 
-    border: 1px solid #1e293b; border-radius: 6px; position: relative;
+    background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);
+    border-radius: 8px; padding: 12px; transition: 0.2s;
   }
-  .config-item::before { /* 左侧金边装饰 */
-    content: ''; position: absolute; left: 0; top: 15px; bottom: 15px; width: 3px; background: var(--accent-gold); border-radius: 0 2px 2px 0;
+  .config-item:hover { border-color: #334155; background: rgba(255,255,255,0.02); }
+  .config-title { color: var(--accent-gold); font-size: 14px; font-weight: bold; margin-bottom: 8px; display: flex; align-items: center;}
+  .config-title::before { content: ''; display: inline-block; width: 4px; height: 14px; background: var(--accent-gold); margin-right: 8px; border-radius: 2px;}
+  
+  .code-box {
+    background: #05080f; padding: 10px; border-radius: 6px; border: 1px dashed #334155;
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
   }
-  .config-title { color: var(--accent-gold); font-size: 14px; font-weight: bold; margin-bottom: 10px; padding-left: 5px;}
-  .config-code-box {
-    color: #a1a1aa; font-family: Monaco, monospace; font-size: 12px; word-break: break-all;
-    line-height: 1.6; margin-bottom: 15px; background: #0a0e17; padding: 10px; border-radius: 4px;
-    border: 1px dashed #334155;
+  .code-text {
+    color: #94a3b8; font-family: var(--font-mono); font-size: 11px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
   }
-  .copy-btn-wrap { display: flex; justify-content: flex-end; }
   .copy-btn {
-    background: linear-gradient(135deg, #d35400, #f39c12); color: white;
-    border: none; padding: 8px 25px; border-radius: 4px; font-size: 13px;
-    font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(211, 84, 0, 0.4);
-    letter-spacing: 1px;
+    background: var(--text-main); color: var(--bg-base);
+    border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px;
+    font-weight: bold; cursor: pointer; transition: 0.2s; flex-shrink: 0;
   }
-  .copy-btn:active { transform: scale(0.95); background: #f39c12; }
-
-  /* 底部固定导航 */
-  .bottom-nav {
-    position: sticky; bottom: 0; width: 100%; background: #0a0e17;
-    border-top: 1px solid #1e293b; display: flex; justify-content: space-around;
-    padding: 12px 0; z-index: 100;
-  }
-  .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-muted); cursor: pointer; transition: 0.2s;}
-  .nav-item.active { color: var(--accent-green); }
-  .nav-icon { font-size: 22px; font-weight: 900; line-height: 1;}
-  .nav-text { font-size: 11px; }
+  .copy-btn:hover { background: var(--accent-gold); color: #000; }
+  .copy-btn:active { transform: scale(0.95); }
 
   /* Toast 提示 */
+  .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; flex-direction: column; gap: 10px;}
   .toast {
-    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
-    background: rgba(10, 14, 23, 0.95); color: var(--accent-green); padding: 15px 30px;
-    border-radius: 8px; border: 1px solid var(--accent-green); font-size: 15px; font-weight: bold;
-    opacity: 0; pointer-events: none; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 2000; text-align: center; box-shadow: 0 10px 30px rgba(46, 204, 113, 0.2);
-    backdrop-filter: blur(5px);
+    background: rgba(46, 204, 113, 0.9); color: #000; padding: 12px 25px;
+    border-radius: 8px; font-size: 14px; font-weight: bold; box-shadow: 0 10px 30px rgba(46, 204, 113, 0.3);
+    animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
-  .toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .toast.hide { opacity: 0; transform: translateY(-20px); transition: 0.3s; }
+
+  /* 移动端特殊适配 */
+  @media (max-width: 768px) {
+    .nav-container { flex-direction: column; height: auto; padding: 15px 0; gap: 15px;}
+    .search-wrap { margin: 0; width: 100%; }
+    .grid-container { grid-template-columns: 1fr; padding-bottom: 30px;}
+    .hero-title { font-size: 24px; }
+  }
 </style>
 </head>
 <body>
 
-<div class="app-container">
-  
-  <!-- Header -->
-  <div class="header">
-    <div class="header-left">
-      <div class="title">首页</div>
-      <div class="subtitle">home page</div>
+<div class="navbar">
+  <div class="nav-container">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">Δ</div>
+      <div>码枪堂 <span>PRO</span></div>
     </div>
-    <div class="header-right">
-      <div class="logo">Δ</div>
+    <div class="search-wrap">
+      <input type="text" id="searchInput" class="search-input" placeholder="输入武器名称搜索 (如: M7, AS Val)...">
     </div>
   </div>
-
-  <!-- Banner -->
-  <div class="banner">
-    <div class="banner-content">
-      <h1>改枪方案<span>数据库</span></h1>
-      <p>全武器改装推荐 不同档位一键查看</p>
-    </div>
-  </div>
-
-  <!-- 公告 -->
-  <div class="notice">
-    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-    <span>国服端游核心配置已同步录入 (共47套最新数据)</span>
-  </div>
-
-  <!-- 搜索 -->
-  <div class="search-box">
-    <input type="text" id="searchInput" class="search-input" placeholder="输入枪械代号 (如: AS Val, M7)...">
-    <button class="search-btn" onclick="renderList()">检索</button>
-  </div>
-
-  <!-- Tabs -->
-  <div class="tabs">
-    <div class="tab active">烽火地带</div>
-    <div class="tab" style="opacity:0.4; pointer-events:none;">全面战场(暂无)</div>
-  </div>
-
-  <!-- 列表区 -->
-  <div class="gun-list" id="gunListContainer">
-    <!-- 数据由 JS 动态渲染 -->
-  </div>
-
-  <!-- 底部导航 -->
-  <div class="bottom-nav">
-    <div class="nav-item active">
-      <div class="nav-icon">⌂</div>
-      <div class="nav-text">首页</div>
-    </div>
-    <div class="nav-item" onclick="alert('系统提示：更多功能模块正在深度开发中...')">
-      <div class="nav-icon">❖</div>
-      <div class="nav-text">更多</div>
-    </div>
-    <div class="nav-item" onclick="alert('码枪堂 - 您的战术终端\n\n数据版本: 2026.06 (国服最新)')">
-      <div class="nav-icon">ℹ</div>
-      <div class="nav-text">关于</div>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div id="toast" class="toast">✔ 协议已复制到剪贴板</div>
-
 </div>
 
+<div class="hero">
+  <div class="hero-title">烽火地带 战术核心数据库</div>
+  <div class="hero-subtitle">全网实时同步 · 支持一键复制导入游戏 · PC/移动端全域适配</div>
+</div>
+
+<div class="grid-container" id="gunGrid">
+  <!-- 卡片由JS动态渲染 -->
+</div>
+
+<div class="toast-container" id="toastBox"></div>
+
 <script>
-// 1. 核心数据源（用户通过脚本抓取的最新真实数据，共47条完整无星号代码）
-const rawScrapedData = [
+// 这是你通过脚本抓取的50条完整真实数据
+const rawData = [
   "M7战斗步枪-烽火地带-6I17GK0059L1ICRB4NQP4",
   "AS Val突击步枪-烽火地带-6GCI31407ODLT6ETQT3GS",
   "AUG突击步枪-烽火地带-6HM4TOS0FSNK3AL67MM2Q",
@@ -308,31 +267,69 @@ const rawScrapedData = [
   "腾龙突击步枪-烽火地带-6HIS5T00BCHV462S8UUDS"
 ];
 
-// 2. 动态分类与聚合引擎
-const prefixPool = ['【满改顶配】', '【跑打机动】', '【零后座压制】', '【性价比半改】', '【绝活特化】'];
+// 纯CSS/SVG绘制的极简战术武器剪影图例库，无需外部图片即可瞬间加载
+const svgLibrary = {
+  // 突击步枪 (AR) - 均衡修长
+  ar: `<svg viewBox="0 0 100 40" fill="#64748b" xmlns="http://www.w3.org/2000/svg">
+         <path d="M10,20 L30,20 L35,15 L70,15 L75,18 L95,18 L95,22 L75,22 L70,25 L50,25 L45,35 L38,35 L40,25 L30,25 L25,30 L10,30 Z" />
+         <rect x="60" y="12" width="5" height="3" fill="#f5b041" opacity="0.8"/>
+       </svg>`,
+  // 狙击步枪/射手步枪 (Sniper/DMR) - 超长枪管，带瞄准镜
+  sniper: `<svg viewBox="0 0 100 40" fill="#64748b" xmlns="http://www.w3.org/2000/svg">
+             <path d="M5,22 L35,22 L40,18 L98,18 L98,20 L45,20 L40,25 L35,25 L25,32 L5,32 Z" />
+             <rect x="45" y="10" width="15" height="6" rx="2" fill="#2ecc71" opacity="0.8"/>
+             <rect x="48" y="16" width="2" height="2" fill="#475569"/>
+             <rect x="55" y="16" width="2" height="2" fill="#475569"/>
+           </svg>`,
+  // 冲锋枪 (SMG) - 短小精悍
+  smg: `<svg viewBox="0 0 100 40" fill="#64748b" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20,20 L40,20 L45,16 L75,16 L75,20 L45,20 L40,30 L32,30 L35,23 L20,23 Z" />
+          <rect x="55" y="20" width="8" height="12" fill="#334155"/>
+          <circle cx="65" cy="14" r="2" fill="#f5b041" opacity="0.8"/>
+        </svg>`,
+  // 机枪 (LMG) - 粗壮，带大弹鼓/弹箱
+  lmg: `<svg viewBox="0 0 100 40" fill="#64748b" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15,18 L35,18 L40,14 L85,14 L85,18 L45,18 L40,22 L15,22 Z" />
+          <rect x="45" y="18" width="15" height="15" rx="3" fill="#334155"/>
+          <path d="M70,18 L75,28 L72,28 L68,18 Z" fill="#475569"/>
+        </svg>`
+};
+
+// 智能识别武器类型并返回对应 SVG 剪影
+function getWeaponVisual(name) {
+  if (name.includes('狙击') || name.includes('射手') || name.includes('M14') || name.includes('SVD') || name.includes('SR')) return { svg: svgLibrary.sniper, type: '精确射手' };
+  if (name.includes('冲锋') || name.includes('Vector') || name.includes('MP')) return { svg: svgLibrary.smg, type: '近战突击' };
+  if (name.includes('机枪') || name.includes('PKM')) return { svg: svgLibrary.lmg, type: '火力压制' };
+  return { svg: svgLibrary.ar, type: '全能步枪' }; // 默认突击步枪
+}
+
+const prefixPool = ['【绝活特化】', '【跑打机动】', '【零后压制】', '【高性价比】', '【满改顶配】'];
 
 function processData() {
   const groupedData = {};
-  
-  rawScrapedData.forEach((item, index) => {
-    // 处理可能的首尾空格
+  rawData.forEach((item, index) => {
     const cleanItem = item.trim();
     if (!cleanItem) return;
-
     const parts = cleanItem.split('-');
     if(parts.length >= 3) {
-      const gunName = parts[0];
+      // 提取核心枪名 (去除后缀如"突击步枪") 以简化标题
+      const rawName = parts[0];
+      const gunCoreName = rawName.replace(/(突击步枪|战斗步枪|射手步枪|狙击步枪|冲锋枪|通用机枪|紧凑突击步枪)$/, '');
+      
       const mode = parts[1];
       const code = parts[2];
-      
       const prefix = prefixPool[index % prefixPool.length];
 
-      if(!groupedData[gunName]) {
-        groupedData[gunName] = [];
+      if(!groupedData[rawName]) {
+        groupedData[rawName] = {
+          coreName: gunCoreName,
+          visual: getWeaponVisual(rawName),
+          configs: []
+        };
       }
-      groupedData[gunName].push({
-        title: `${gunName} ${prefix}配置`,
-        fullCode: `${gunName}-${mode}-${code}`
+      groupedData[rawName].configs.push({
+        title: `${prefix} ${mode}`,
+        fullCode: item // 保持完整代码用于复制
       });
     }
   });
@@ -340,78 +337,60 @@ function processData() {
 }
 
 const db = processData();
-
-// 3. UI 渲染逻辑
-const container = document.getElementById('gunListContainer');
+const gridContainer = document.getElementById('gunGrid');
 const searchInput = document.getElementById('searchInput');
 
-function renderList() {
-  container.innerHTML = '';
+function renderGrid() {
+  gridContainer.innerHTML = '';
   const keyword = searchInput.value.trim().toLowerCase();
 
-  for (const [gunName, configs] of Object.entries(db)) {
-    // 搜索过滤
-    if (keyword && !gunName.toLowerCase().includes(keyword)) continue;
+  for (const [rawName, gunData] of Object.entries(db)) {
+    if (keyword && !rawName.toLowerCase().includes(keyword)) continue;
 
-    // 创建最外层卡片
-    const card = document.createElement('div');
-    card.className = 'gun-card';
-
-    // 生成内部配置 HTML
+    // 构建内部配置列表 HTML
     let configsHtml = '';
-    configs.forEach(conf => {
+    gunData.configs.forEach(conf => {
       configsHtml += `
         <div class="config-item">
           <div class="config-title">${conf.title}</div>
-          <div class="config-code-box">
-            <span>[协议密文]</span><br><br>${conf.fullCode}
-          </div>
-          <div class="copy-btn-wrap">
-            <button class="copy-btn" onclick="copyText('${conf.fullCode}', this, event)">复制协议</button>
+          <div class="code-box">
+            <div class="code-text" title="${conf.fullCode}">${conf.fullCode}</div>
+            <button class="copy-btn" onclick="copyCode('${conf.fullCode}', this)">复制</button>
           </div>
         </div>
       `;
     });
 
+    // 构建并插入卡片
+    const card = document.createElement('div');
+    card.className = 'weapon-card';
     card.innerHTML = `
-      <div class="gun-header" onclick="toggleCard(this)">
-        <div class="gun-header-left">
-          <div class="gun-img-placeholder"></div>
-          <span class="gun-title">${gunName}</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span class="gun-count">${configs.length} 套方案</span>
-          <span class="toggle-icon">▼</span>
+      <div class="weapon-visual">
+        <div class="weapon-type-badge">${gunData.visual.type}</div>
+        <div class="weapon-svg-container">
+          ${gunData.visual.svg}
         </div>
       </div>
-      <div class="gun-details">
-        ${configsHtml}
+      <div class="weapon-info">
+        <div class="weapon-header">
+          <div class="weapon-name">${gunData.coreName}</div>
+          <div class="variant-count">${gunData.configs.length} 套方案</div>
+        </div>
+        <div class="variants-list">
+          ${configsHtml}
+        </div>
       </div>
     `;
-    container.appendChild(card);
+    gridContainer.appendChild(card);
   }
 
-  if(container.innerHTML === '') {
-    container.innerHTML = '<div style="text-align:center; padding:40px 20px; color:#64748b; font-size:14px; line-height: 1.8;">⚠ 未检索到匹配数据<br>请尝试更换搜索关键词，例如 "M7" 或 "AS Val"。</div>';
+  if(gridContainer.innerHTML === '') {
+    gridContainer.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px; color:#64748b; font-size:16px;">数据库中未检索到相关武器数据...</div>';
   }
 }
 
-// 4. 交互：手风琴折叠展开
-window.toggleCard = function(headerElement) {
-  const card = headerElement.parentElement;
-  // 如果需要保持手风琴只打开一个，可以取消注释下面这行
-  /*
-  document.querySelectorAll('.gun-card.expanded').forEach(el => {
-    if(el !== card) el.classList.remove('expanded');
-  });
-  */
-  card.classList.toggle('expanded');
-};
-
-// 5. 交互：复制与 Toast 提示
-window.copyText = function(text, btnElement, event) {
-  event.stopPropagation(); // 阻止事件冒泡导致卡片被误折叠
-  
+window.copyCode = function(text, btnElement) {
+  // 复制到剪贴板
   const tempInput = document.createElement("textarea");
   tempInput.value = text;
   document.body.appendChild(tempInput);
@@ -419,38 +398,43 @@ window.copyText = function(text, btnElement, event) {
   document.execCommand("copy");
   document.body.removeChild(tempInput);
 
-  // 按钮临时变色反馈
+  // 按钮临时状态
   const originalText = btnElement.innerText;
-  btnElement.innerText = "已复制";
+  btnElement.innerText = "成功";
   btnElement.style.background = "#2ecc71";
-  btnElement.style.boxShadow = "0 2px 8px rgba(46, 204, 113, 0.4)";
-  
+  btnElement.style.color = "#000";
   setTimeout(() => {
     btnElement.innerText = originalText;
     btnElement.style.background = "";
-    btnElement.style.boxShadow = "";
+    btnElement.style.color = "";
   }, 1500);
 
-  showToast();
+  // 触发底部 Toast
+  showToast(`已复制 ${text.split('-')[0]} 的战术协议`);
 };
 
-function showToast() {
-  const toast = document.getElementById('toast');
-  toast.classList.add('show');
+function showToast(message) {
+  const toastBox = document.getElementById('toastBox');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerText = message;
+  toastBox.appendChild(toast);
+
   setTimeout(() => {
-    toast.classList.remove('show');
+    toast.classList.add('hide');
+    setTimeout(() => toast.remove(), 300);
   }, 2000);
 }
 
-// 监听回车执行搜索
-searchInput.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        renderList();
-    }
+// 监听搜索框实时过滤 (防抖优化体验)
+let searchTimeout;
+searchInput.addEventListener('input', function () {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(renderGrid, 300);
 });
 
-// 初始渲染列表
-renderList();
+// 初始化渲染
+renderGrid();
 
 </script>
 </body>
