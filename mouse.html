@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鼠标操控测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #1a202c; /* 深色背景 */
+            color: white;
+            font-family: sans-serif;
+            cursor: crosshair; /* 改变默认鼠标样式 */
+        }
+        
+        /* 自定义跟随鼠标的圆圈 */
+        #cursor-follower {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #60a5fa; /* 蓝色边框 */
+            border-radius: 50%;
+            pointer-events: none; /* 确保它不会阻挡鼠标点击事件 */
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            z-index: 50;
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.5);
+        }
+
+        /* 鼠标内部的小中心点 */
+        #cursor-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #60a5fa;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 51;
+        }
+
+        /* 当鼠标点击时的样式类 */
+        .clicking {
+            width: 60px !important;
+            height: 60px !important;
+            background-color: rgba(96, 165, 250, 0.2);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen relative">
+
+    <!-- 鼠标跟随元素 -->
+    <div id="cursor-follower"></div>
+    <div id="cursor-dot"></div>
+
+    <!-- 页面内容 -->
+    <div class="text-center z-10 p-8 bg-gray-800 bg-opacity-70 rounded-2xl backdrop-blur-sm border border-gray-700 max-w-lg shadow-2xl transition-transform duration-300 hover:scale-105" id="interactive-card">
+        <h1 class="text-4xl font-bold mb-4 text-blue-400">鼠标操控已激活</h1>
+        <p class="text-gray-300 mb-6 text-lg">移动你的鼠标，你会看到光标跟随效果。</p>
+        
+        <div class="grid grid-cols-2 gap-4">
+            <button class="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-blue-500/50" id="btn-1">
+                悬停试试
+            </button>
+            <button class="px-6 py-3 bg-purple-600 hover:bg-purple-500 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-purple-500/50" id="btn-2">
+                点击屏幕
+            </button>
+        </div>
+
+        <div class="mt-8 pt-4 border-t border-gray-700">
+            <p class="text-sm text-gray-400">当前鼠标坐标：</p>
+            <p class="font-mono text-xl text-green-400 mt-2" id="coords">X: 0, Y: 0</p>
+        </div>
+    </div>
+
+    <script>
+        // 获取需要的 DOM 元素
+        const follower = document.getElementById('cursor-follower');
+        const dot = document.getElementById('cursor-dot');
+        const coordsDisplay = document.getElementById('coords');
+        const buttons = document.querySelectorAll('button');
+
+        // 变量用于平滑跟随效果
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let followerX = mouseX;
+        let followerY = mouseY;
+
+        // 监听鼠标移动事件
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // 更新中心点位置 (瞬间移动)
+            dot.style.left = mouseX + 'px';
+            dot.style.top = mouseY + 'px';
+
+            // 更新坐标文本
+            coordsDisplay.innerText = `X: ${mouseX}, Y: ${mouseY}`;
+        });
+
+        // 使用 requestAnimationFrame 实现外圈的平滑延迟跟随 (缓动效果)
+        function animate() {
+            // 计算差值并只移动一小部分 (0.1 是缓动系数)
+            followerX += (mouseX - followerX) * 0.15;
+            followerY += (mouseY - followerY) * 0.15;
+
+            follower.style.left = followerX + 'px';
+            follower.style.top = followerY + 'px';
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 监听鼠标按下和松开事件，添加点击动画
+        document.addEventListener('mousedown', () => {
+            follower.classList.add('clicking');
+        });
+        
+        document.addEventListener('mouseup', () => {
+            follower.classList.remove('clicking');
+        });
+
+        // 按钮悬停时改变光标外观
+        buttons.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                follower.style.borderColor = '#c084fc'; // 变紫色
+                follower.style.boxShadow = '0 0 15px rgba(192, 132, 252, 0.5)';
+                dot.style.backgroundColor = '#c084fc';
+            });
+            btn.addEventListener('mouseleave', () => {
+                follower.style.borderColor = '#60a5fa'; // 恢复蓝色
+                follower.style.boxShadow = '0 0 15px rgba(96, 165, 250, 0.5)';
+                dot.style.backgroundColor = '#60a5fa';
+            });
+        });
+    </script>
+</body>
+</html>
